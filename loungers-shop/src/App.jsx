@@ -1,756 +1,1331 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-// ── DATA ────────────────────────────────────────────────
 const PRODUCTS = [
-    {
-        id: 1, name: "Accelerator®", subtitle: "Driving Slippers", price: 406,
-        color: "Tan", material: "Nappa Leather", category: "schuhe",
-        image: "https://loungersway.com/cdn/shop/products/ACCMNAP_ALL_TAN_sideview_1024x1024.jpg?v=1678185665",
-        tag: "Bestseller", cardBg: "#EDE7DE",
-        sizes: ["38", "39", "40", "41", "42", "43", "44", "45"],
-        description: "Our signature driving slipper, handcrafted from the finest Italian Nappa leather. The Vibram® HydroGrip sole delivers superior traction on any surface, while the removable Sorbothane® insole lets you go barefoot when the moment calls for it.",
-    },
-    {
-        id: 2, name: "Accelerator®", subtitle: "Driving Slippers", price: 406,
-        color: "Navy", material: "Nappa Leather", category: "schuhe",
-        image: "https://loungersway.com/cdn/shop/products/ACCMNAP_ALL_TAN_frontview_1024x1024.jpg?v=1678185665",
-        tag: null, cardBg: "#D8D4CE",
-        sizes: ["38", "39", "40", "41", "42", "43", "44", "45"],
-        description: "The Accelerator in deep Navy — the same iconic driving slipper in a versatile colourway. Hand-stitched Nappa leather upper with Vibram® HydroGrip sole.",
-    },
-    {
-        id: 3, name: "Classic Loafer", subtitle: "Indoor / Outdoor", price: 488,
-        color: "Cognac", material: "Calfskin Leather", category: "schuhe",
-        image: "https://loungersway.com/cdn/shop/products/ACCMNAP_ALL_TAN_topview_1024x1024.jpg?v=1639750464",
-        tag: "New", cardBg: "#E8E2D8",
-        sizes: ["38", "39", "40", "41", "42", "43", "44"],
-        description: "A refined loafer that transitions effortlessly from home to street. Italian calfskin leather with a cushioned insole and flexible sole for all-day comfort.",
-    },
-    {
-        id: 4, name: "Heritage Moccasin", subtitle: "Hybrid Slipper", price: 376,
-        color: "Chestnut", material: "Nappa Leather", category: "schuhe",
-        image: "https://loungersway.com/cdn/shop/products/ACCMNAP_ALL_TAN_backview_1024x1024.jpg?v=1678185665",
-        tag: null, cardBg: "#DED8D0",
-        sizes: ["39", "40", "41", "42", "43", "44", "45"],
-        description: "The Heritage Moccasin blends traditional construction with modern comfort. Hand-stitched Nappa leather upper with a dual-density sole.",
-    },
-    {
-        id: 5, name: "Elegance", subtitle: "Women's Loafer", price: 396,
-        color: "Blush", material: "Nappa Leather", category: "schuhe",
-        image: "https://loungersway.com/cdn/shop/products/ACCMNAP_ALL_TAN_bottomview_1024x1024.jpg?v=1678185665",
-        tag: "New", cardBg: "#E4DED6",
-        sizes: ["36", "37", "38", "39", "40", "41"],
-        description: "Designed for her — the Elegance loafer in soft Blush Nappa leather. Lightweight, flexible, and endlessly refined.",
-    },
-    {
-        id: 6, name: "Traveller", subtitle: "Driving Shoe", price: 434,
-        color: "Espresso", material: "Calfskin Leather", category: "schuhe",
-        image: "https://loungersway.com/cdn/shop/products/20210621_154922_gray_2_1024x1024.jpg?v=1639750464",
-        tag: null, cardBg: "#D4CEC6",
-        sizes: ["39", "40", "41", "42", "43", "44", "45"],
-        description: "Built for the road. The Traveller pairs rich calfskin leather with our most flexible sole, making it the ideal companion for long drives and weekend escapes.",
-    },
-    {
-        id: 7, name: "Cashmere Crew", subtitle: "Knitted Pullover", price: 295,
-        color: "Sand", material: "100% Cashmere", category: "pullover",
-        image: null, tag: "New", cardBg: "#E8DDD0",
-        sizes: ["S", "M", "L", "XL"],
-        description: "Luxuriously soft Mongolian cashmere, knitted in Italy. A relaxed crew neck with ribbed cuffs and hem — understated warmth for every season.",
-    },
-    {
-        id: 8, name: "Merino V-Neck", subtitle: "Lightweight Pullover", price: 245,
-        color: "Charcoal", material: "Extra-Fine Merino", category: "pullover",
-        image: null, tag: null, cardBg: "#C8C4BE",
-        sizes: ["S", "M", "L", "XL", "XXL"],
-        description: "Extra-fine Italian merino wool in a classic V-neck silhouette. Breathable, temperature-regulating, and impeccably finished.",
-    },
-    {
-        id: 9, name: "Heritage Cable", subtitle: "Cable-Knit Pullover", price: 325,
-        color: "Cream", material: "Cashmere Blend", category: "pullover",
-        image: null, tag: "Bestseller", cardBg: "#EAE4DC",
-        sizes: ["S", "M", "L", "XL"],
-        description: "A classic cable-knit pattern in a cashmere-wool blend. Crafted by Italian artisans using traditional knitting techniques passed down through generations.",
-    },
-    {
-        id: 10, name: "Travel Layer", subtitle: "Zip Pullover", price: 265,
-        color: "Navy", material: "Merino Wool", category: "pullover",
-        image: null, tag: null, cardBg: "#C4CAD2",
-        sizes: ["S", "M", "L", "XL"],
-        description: "The perfect travel companion. Half-zip merino pullover that packs flat and keeps you comfortable from lounge to landing.",
-    },
+  {
+    id: 1,
+    name: "WAVII Home",
+    subtitle: "Indoor Feel Shoe",
+    price: 169,
+    color: "Indigo",
+    material: "IVIVI Barefoot Textile",
+    category: "home",
+    image: "/wai13-opt.jpeg",
+    hoverImage: "/wai9-opt.jpeg",
+    tag: "Signature",
+    sizes: ["36", "37", "38", "39", "40", "41", "42", "43", "44", "45"],
+    description:
+      "Ein leichter Feel Shoe fuer Zuhause, den Morgen, das Studio und alle Momente dazwischen. Flexibel, atmungsaktiv und so reduziert konstruiert, dass sich der Schuh kaum in den Vordergrund drueckt.",
+  },
+  {
+    id: 2,
+    name: "WAVII Travel",
+    subtitle: "Packable Loafer",
+    price: 179,
+    color: "Deep Navy",
+    material: "Flexible textile upper",
+    category: "travel",
+    image: "/wai7-opt.jpeg",
+    hoverImage: "/wai8-opt.jpeg",
+    tag: "Travel",
+    sizes: ["38", "39", "40", "41", "42", "43", "44", "45"],
+    description:
+      "Gemacht fuer Wege, Wartezeiten und leichte Routinen unterwegs. Die flexible Konstruktion laesst sich flach verstauen und bleibt trotzdem stabil genug fuer den ganzen Tag.",
+  },
+  {
+    id: 3,
+    name: "WAVII Flex",
+    subtitle: "Barefoot Technology",
+    price: 189,
+    color: "Blue Canvas",
+    material: "IVIVI sole system",
+    category: "tech",
+    image: "/wai6-opt.jpeg",
+    hoverImage: "/wai5-opt.jpeg",
+    tag: "Flexible",
+    sizes: ["37", "38", "39", "40", "41", "42", "43", "44"],
+    description:
+      "Die weiche, rollbare Sohle gibt dem Fuss Raum, ohne den Look eines klassischen Slippers zu verlieren. Ein ruhiger Schuh mit technischer Substanz.",
+  },
+  {
+    id: 4,
+    name: "WAVII Lounge",
+    subtitle: "Soft Everyday Slip-on",
+    price: 159,
+    color: "Washed Blue",
+    material: "Soft-woven textile",
+    category: "home",
+    image: "/wai10-opt.jpeg",
+    hoverImage: "/wai11-opt.jpeg",
+    tag: null,
+    sizes: ["36", "37", "38", "39", "40", "41", "42", "43"],
+    description:
+      "Ein entspannter Slip-on fuer ruhige Innenraeume, kurze Wege und Tage, an denen Komfort selbstverstaendlich sein soll.",
+  },
+  {
+    id: 5,
+    name: "WAVII Studio",
+    subtitle: "Natural Movement",
+    price: 174,
+    color: "Ocean Blue",
+    material: "Breathable upper",
+    category: "tech",
+    image: "/wai3-opt.jpeg",
+    hoverImage: "/wai12-opt.jpeg",
+    tag: null,
+    sizes: ["37", "38", "39", "40", "41", "42", "43", "44", "45"],
+    description:
+      "Minimal im Aufbau, weich im Auftritt und praezise dort, wo Halt gebraucht wird. Fuer Training, Reisen und Alltag mit mehr Bewegungsfreiheit.",
+  },
+  {
+    id: 6,
+    name: "WAVII Classic",
+    subtitle: "All-day Feel Shoe",
+    price: 184,
+    color: "Midnight",
+    material: "Flexible sole",
+    category: "travel",
+    image: "/wai8-opt.jpeg",
+    hoverImage: "/wai4-opt.jpeg",
+    tag: "New",
+    sizes: ["38", "39", "40", "41", "42", "43", "44", "45"],
+    description:
+      "Der vielseitige WAI Slip-on fuer Alltag und Wochenende. Clean genug fuer Reisen, weich genug fuer Zuhause, belastbar genug fuer draussen.",
+  },
 ];
 
 const FEATURES = [
-    { icon: "\u2726", title: "Handcrafted in Italy", desc: "Master artisans since 1979" },
-    { icon: "\u25C8", title: "Vibram\u00AE HydroGrip", desc: "Superior traction & stability" },
-    { icon: "\u25CB", title: "Barefoot Option", desc: "Removable Sorbothane\u00AE insoles" },
-    { icon: "\u25C7", title: "Sustainable", desc: "One tree planted per pair" },
+  ["01", "Barefoot feel", "Flexible Sohle und viel Raum fuer natuerliche Bewegung."],
+  ["02", "Packable", "Leicht, weich und flach verstaubar fuer Reisen."],
+  ["03", "Clean design", "Reduzierte Linien, textile Struktur, kein lauter Sportschuh."],
+  ["04", "Easy care", "Gemacht fuer Alltag, kurze Wege und unkomplizierte Routinen."],
 ];
 
-// ── ICONS ───────────────────────────────────────────────
-function BagIcon({ size = 16 }) {
-    return (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
-            <line x1="3" y1="6" x2="21" y2="6" />
-            <path d="M16 10a4 4 0 01-8 0" />
-        </svg>
-    );
-}
-
-function PlusIcon({ size = 14 }) {
-    return (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <line x1="12" y1="5" x2="12" y2="19" />
-            <line x1="5" y1="12" x2="19" y2="12" />
-        </svg>
-    );
-}
-
-// ── GLOBAL STYLES (injected once) ───────────────────────
 const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f7f3ed;
+  --paper: #fffaf2;
+  --text: #1c1917;
+  --muted: #766b61;
+  --line: rgba(28, 25, 23, 0.12);
+  --line-strong: rgba(28, 25, 23, 0.22);
+  --navy: #172333;
+  --clay: #b8a898;
+  --sand: #ede7de;
+}
+
+* { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); }
+button, a { font: inherit; }
+button { color: inherit; }
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(40px); }
+  from { opacity: 0; transform: translateY(24px); }
   to { opacity: 1; transform: translateY(0); }
 }
-@keyframes float {
-  0%, 100% { transform: translateY(0) rotate(-1.5deg); }
-  50% { transform: translateY(-24px) rotate(1deg); }
-}
-@keyframes pulseLine {
-  0%, 100% { opacity: 0.3; transform: scaleY(0.85) translateY(0); }
-  50% { opacity: 1; transform: scaleY(1.2) translateY(4px); }
+
+@keyframes slowZoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.045); }
 }
 
-.hero-section::after {
-  content: ''; position: absolute; inset: 0; pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-  opacity: 0.028; mix-blend-mode: multiply; z-index: 1;
+.site {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "DM Sans", system-ui, sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
 }
-.hero-section > * { position: relative; z-index: 2; }
 
-.nav-link { position: relative; transition: opacity 0.25s; opacity: 0.6; }
-.nav-link:hover { opacity: 1; }
+.serif { font-family: "Cormorant Garamond", Georgia, serif; }
 
-.hero-cta-pill { transition: transform 0.4s cubic-bezier(0.16,1,0.3,1); }
-.hero-cta-pill:hover { transform: scale(1.05); }
-.hero-cta-pill .arr { display: inline-block; transition: transform 0.3s cubic-bezier(0.16,1,0.3,1); }
-.hero-cta-pill:hover .arr { transform: translateX(5px); }
+.nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 28px;
+  padding: 22px 44px;
+  border-bottom: 1px solid transparent;
+  transition: background 0.35s ease, border-color 0.35s ease, padding 0.35s ease;
+}
 
-.p-card { cursor: pointer; text-decoration: none; color: inherit; display: block; }
-.p-card-img-inner { transition: transform 0.7s cubic-bezier(0.16,1,0.3,1); }
-.p-card:hover .p-card-img-inner { transform: scale(1.04); }
-.p-card-shoe { transition: transform 0.6s cubic-bezier(0.16,1,0.3,1); }
-.p-card:hover .p-card-shoe { transform: translateY(-10px) rotate(2deg); }
+.nav.scrolled {
+  background: rgba(247, 243, 237, 0.9);
+  border-bottom-color: var(--line);
+  backdrop-filter: blur(18px);
+}
+
+.nav.dark:not(.scrolled) { color: var(--paper); }
+.nav-left, .nav-right { display: flex; align-items: center; gap: 30px; }
+.nav-right { justify-content: flex-end; }
+.nav a, .nav button {
+  text-decoration: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: inherit;
+}
+
+.nav-link {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  opacity: 0.72;
+}
+
+.brand {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 34px;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.bag-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid currentColor !important;
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  opacity: 0.88;
+}
+
+.bag-count {
+  display: inline-grid;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
+  background: currentColor;
+  color: var(--bg);
+  font-size: 10px;
+}
+
+.hero {
+  position: relative;
+  min-height: 88svh;
+  display: grid;
+  align-items: end;
+  padding: 128px 44px 48px;
+  color: var(--paper);
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 60% center;
+  animation: slowZoom 14s ease-out both;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(20, 17, 14, 0.78) 0%, rgba(20, 17, 14, 0.44) 38%, rgba(20, 17, 14, 0.08) 72%),
+    linear-gradient(0deg, rgba(20, 17, 14, 0.25), rgba(20, 17, 14, 0.02));
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 690px) 1fr;
+  gap: 40px;
+  align-items: end;
+  width: 100%;
+}
+
+.hero-copy {
+  animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.eyebrow {
+  margin: 0 0 18px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  opacity: 0.76;
+}
+
+.hero h1 {
+  margin: 0;
+  max-width: 680px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 92px;
+  line-height: 0.93;
+  font-weight: 300;
+  letter-spacing: 0;
+}
+
+.hero-text {
+  max-width: 480px;
+  margin: 26px 0 0;
+  color: rgba(255, 250, 242, 0.78);
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 34px;
+  flex-wrap: wrap;
+}
+
+.primary-btn,
+.secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  border-radius: 999px;
+  padding: 0 24px;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 12px;
+}
+
+.primary-btn { background: var(--paper); color: var(--text); }
+.secondary-btn { color: var(--paper); border: 1px solid rgba(255, 250, 242, 0.46); }
+
+.hero-proof {
+  justify-self: end;
+  width: min(360px, 100%);
+  border-top: 1px solid rgba(255, 250, 242, 0.44);
+  padding-top: 20px;
+  color: rgba(255, 250, 242, 0.78);
+  font-size: 13px;
+  line-height: 1.65;
+  animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
+}
+
+.feature-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.feature {
+  min-height: 132px;
+  padding: 26px 28px;
+  border-right: 1px solid var(--line);
+}
+.feature:last-child { border-right: 0; }
+.feature-number {
+  display: block;
+  margin-bottom: 18px;
+  color: var(--clay);
+  font-size: 12px;
+}
+.feature strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 500;
+}
+.feature span:last-child {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.section {
+  padding: 92px 44px;
+}
+
+.section-inner {
+  max-width: 1360px;
+  margin: 0 auto;
+}
+
+.section-head {
+  display: grid;
+  grid-template-columns: minmax(0, 620px) auto;
+  gap: 36px;
+  align-items: end;
+  margin-bottom: 34px;
+}
+
+.section h2 {
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 58px;
+  line-height: 1;
+  font-weight: 300;
+  letter-spacing: 0;
+}
+
+.section-note {
+  margin: 16px 0 0;
+  max-width: 520px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.filter {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  padding: 10px 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.filter.active {
+  background: var(--text);
+  color: var(--paper);
+  border-color: var(--text);
+}
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.product-card {
+  position: relative;
+  display: grid;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 510px;
+  cursor: pointer;
+  text-align: left;
+  animation: fadeUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.product-media {
+  position: relative;
+  height: 360px;
+  overflow: hidden;
+  background: var(--sand);
+}
+
+.product-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.45s ease;
+}
+
+.product-card:hover .product-media img { transform: scale(1.045); }
+
+.product-media .hover-img {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.product-card:hover .hover-img { opacity: 1; }
+.product-card:hover .main-img { opacity: 0; }
+
+.product-tag {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 2;
+  border-radius: 999px;
+  background: rgba(255, 250, 242, 0.88);
+  padding: 7px 12px;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 10px;
+}
 
 .quick-add {
-  transition: background 0.25s, color 0.25s, transform 0.3s cubic-bezier(0.16,1,0.3,1);
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 2;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(28, 25, 23, 0.18);
+  background: rgba(255, 250, 242, 0.9);
+  cursor: pointer;
+  font-size: 23px;
+  line-height: 1;
 }
-.quick-add:hover { background: var(--text-color) !important; color: var(--bg-color) !important; transform: scale(1.08); }
 
-.filter-pill { transition: all 0.3s ease; }
-.filter-pill:hover { color: #3D2B1F !important; border-color: #3D2B1F !important; }
-
-.view-all-link { transition: color 0.3s, border-color 0.3s; }
-.view-all-link:hover { color: #3D2B1F; border-color: #3D2B1F; }
-
-.feature-card { transition: all 0.4s ease; }
-.feature-card:hover { background: rgba(61,43,31,0.03); }
-
-.cta-link { position: relative; overflow: hidden; transition: all 0.4s cubic-bezier(0.16,1,0.3,1); }
-.cta-link::after {
-  content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 1.5px;
-  background: currentColor; transform: scaleX(0); transform-origin: right;
-  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+.product-info {
+  display: grid;
+  gap: 18px;
+  padding: 22px;
 }
-.cta-link:hover::after { transform: scaleX(1); transform-origin: left; }
 
-.bag-overlay { opacity: 0; pointer-events: none; transition: opacity 0.4s; }
-.bag-overlay.open { opacity: 1; pointer-events: all; }
-.bag-drawer { transform: translateX(105%); transition: transform 0.55s cubic-bezier(0.16,1,0.3,1); }
-.bag-drawer.open { transform: translateX(0); }
+.product-title-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: start;
+}
 
-.size-btn { transition: background 0.25s, color 0.25s, border-color 0.25s; }
-.size-btn:hover { background: #EDE7DE; }
-.size-btn.active { background: #3D2B1F !important; color: #F7F3ED !important; border-color: #3D2B1F !important; }
+.product-name {
+  margin: 0 0 6px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 30px;
+  line-height: 1;
+  font-weight: 400;
+}
 
-.add-bag-btn { transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), background 0.3s; }
-.add-bag-btn:hover { transform: scale(1.02); background: #2C2520; }
+.product-sub {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
 
-.detail-back { transition: opacity 0.25s; opacity: 0.6; }
-.detail-back:hover { opacity: 1; }
+.price {
+  white-space: nowrap;
+  font-size: 14px;
+  color: var(--muted);
+}
 
-.bag-nav-btn { transition: background 0.25s; }
-.bag-nav-btn:hover { background: #EDE7DE; }
+.product-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 12px;
+}
 
-.cart-close-btn { transition: background 0.2s; }
-.cart-close-btn:hover { background: #EDE7DE; }
+.story {
+  background: #fff;
+}
 
-.checkout-btn { transition: transform 0.3s cubic-bezier(0.16,1,0.3,1); }
-.checkout-btn:hover { transform: scale(1.02); }
+.story-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.84fr) minmax(0, 1.16fr);
+  gap: 52px;
+  align-items: center;
+}
 
-.ci-del { transition: color 0.2s; }
-.ci-del:hover { color: #1C1917; }
+.story-copy {
+  max-width: 490px;
+}
 
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #F7F3ED; }
-::-webkit-scrollbar-thumb { background: #C8B8A0; border-radius: 3px; }
+.story-copy p {
+  color: var(--muted);
+  line-height: 1.82;
+  font-size: 15px;
+}
+
+.story-link {
+  display: inline-flex;
+  margin-top: 18px;
+  color: var(--text);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 12px;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 5px;
+}
+
+.story-images {
+  display: grid;
+  grid-template-columns: 1fr 0.72fr;
+  gap: 18px;
+  align-items: end;
+}
+
+.story-image {
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--sand);
+}
+.story-image.large { aspect-ratio: 4 / 5; }
+.story-image.small { aspect-ratio: 4 / 4.8; margin-bottom: 58px; }
+.story-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.banner {
+  position: relative;
+  min-height: 520px;
+  display: grid;
+  align-items: end;
+  color: var(--paper);
+  overflow: hidden;
+  padding: 44px;
+}
+
+.banner img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(13, 17, 20, 0.74), rgba(13, 17, 20, 0.06));
+}
+
+.banner-content {
+  position: relative;
+  z-index: 1;
+  max-width: 560px;
+}
+
+.banner h2 {
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 62px;
+  line-height: 1;
+  font-weight: 300;
+}
+
+.banner p {
+  color: rgba(255, 250, 242, 0.78);
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.footer {
+  padding: 58px 44px 38px;
+  border-top: 1px solid var(--line);
+}
+
+.footer-inner {
+  max-width: 1360px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+}
+
+.footer-brand {
+  margin: 0 0 10px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 42px;
+  letter-spacing: 0.12em;
+}
+
+.footer p {
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.7;
+}
+
+.footer-links {
+  display: flex;
+  gap: 34px;
+  align-items: start;
+}
+
+.footer-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(0, 0, 0, 0.38);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.drawer-overlay.open { opacity: 1; pointer-events: auto; }
+
+.drawer {
+  position: fixed;
+  inset: 0 0 0 auto;
+  z-index: 90;
+  width: min(430px, 100vw);
+  background: var(--bg);
+  border-left: 1px solid var(--line);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  transform: translateX(102%);
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.drawer.open { transform: translateX(0); }
+
+.drawer-head,
+.drawer-foot {
+  padding: 26px;
+  border-bottom: 1px solid var(--line);
+}
+.drawer-foot { border-bottom: 0; border-top: 1px solid var(--line); }
+.drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.drawer-head h2 {
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 32px;
+  font-weight: 400;
+}
+.close {
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+.drawer-body {
+  overflow: auto;
+  padding: 18px 26px;
+}
+.empty {
+  display: grid;
+  place-items: center;
+  min-height: 260px;
+  text-align: center;
+  color: var(--muted);
+}
+.cart-row {
+  display: grid;
+  grid-template-columns: 82px 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+.cart-row img {
+  width: 82px;
+  height: 82px;
+  object-fit: cover;
+  border-radius: 6px;
+  background: var(--sand);
+}
+.cart-row h3 {
+  margin: 0 0 6px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 22px;
+  font-weight: 400;
+}
+.cart-row p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.remove {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 20px;
+}
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 18px;
+}
+.checkout {
+  width: 100%;
+  min-height: 50px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--paper);
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.detail {
+  min-height: 100vh;
+  padding-top: 86px;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(390px, 0.9fr);
+  min-height: calc(100vh - 86px);
+}
+
+.detail-media {
+  position: relative;
+  background: var(--sand);
+  overflow: hidden;
+}
+.detail-media img {
+  width: 100%;
+  height: 100%;
+  min-height: 620px;
+  object-fit: cover;
+}
+.detail-panel {
+  padding: 72px 58px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.back {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 34px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 12px;
+  cursor: pointer;
+}
+.detail-panel h1 {
+  margin: 0 0 8px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 68px;
+  line-height: 0.98;
+  font-weight: 300;
+}
+.detail-sub {
+  margin: 0 0 26px;
+  color: var(--muted);
+}
+.detail-price {
+  margin-bottom: 34px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 38px;
+}
+.size-label {
+  margin-bottom: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 12px;
+}
+.sizes {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+.size {
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+.size.active {
+  background: var(--text);
+  color: var(--paper);
+  border-color: var(--text);
+}
+.add-to-bag {
+  min-height: 54px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--paper);
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 12px;
+  cursor: pointer;
+}
+.add-to-bag:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.detail-copy {
+  margin-top: 34px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  line-height: 1.82;
+}
+
+@media (max-width: 980px) {
+  .nav {
+    grid-template-columns: auto 1fr auto;
+    padding: 18px 20px;
+  }
+  .nav-left { display: none; }
+  .brand { font-size: 30px; justify-self: start; }
+  .nav-right { gap: 12px; }
+  .nav-right .nav-link { display: none; }
+  .hero {
+    min-height: 86svh;
+    padding: 108px 22px 34px;
+  }
+  .hero-bg { object-position: 67% center; }
+  .hero::after {
+    background: linear-gradient(90deg, rgba(20, 17, 14, 0.82), rgba(20, 17, 14, 0.34));
+  }
+  .hero-content { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 58px; max-width: 430px; }
+  .hero-proof { justify-self: start; width: 100%; max-width: 430px; }
+  .feature-strip { grid-template-columns: repeat(2, 1fr); }
+  .feature:nth-child(2) { border-right: 0; }
+  .section { padding: 68px 20px; }
+  .section-head { grid-template-columns: 1fr; }
+  .section h2 { font-size: 44px; }
+  .filters { justify-content: flex-start; }
+  .shop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .story-layout { grid-template-columns: 1fr; }
+  .story-copy { max-width: 650px; }
+  .banner { padding: 28px 20px; min-height: 430px; }
+  .banner h2 { font-size: 44px; }
+  .footer-inner { grid-template-columns: 1fr; }
+  .detail-grid { grid-template-columns: 1fr; }
+  .detail-media img { min-height: 420px; }
+  .detail-panel { padding: 42px 24px 64px; }
+}
+
+@media (max-width: 640px) {
+  .bag-btn {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    justify-content: center;
+  }
+  .bag-label { display: none; }
+  .hero h1 { font-size: 46px; }
+  .hero-text { font-size: 15px; }
+  .hero-actions { align-items: stretch; }
+  .primary-btn, .secondary-btn { width: 100%; }
+  .feature-strip { grid-template-columns: 1fr; }
+  .feature { border-right: 0; }
+  .shop-grid { grid-template-columns: 1fr; }
+  .product-card { min-height: auto; }
+  .product-media { height: 330px; }
+  .story-images { grid-template-columns: 1fr; }
+  .story-image.small { margin-bottom: 0; }
+  .footer-links { flex-direction: column; gap: 12px; }
+  .detail-panel h1 { font-size: 48px; }
+}
 `;
 
-// ── MAIN COMPONENT ──────────────────────────────────────
-export default function LoungersShop() {
-    const [activePage, setActivePage] = useState(null);
-    const [bag, setBag] = useState([]);
-    const [bagOpen, setBagOpen] = useState(false);
-    const [filter, setFilter] = useState("all");
-    const [loaded, setLoaded] = useState(false);
-    const [scrollY, setScrollY] = useState(0);
-    const [selectedSize, setSelectedSize] = useState(null);
+export default function App() {
+  const [bag, setBag] = useState([]);
+  const [bagOpen, setBagOpen] = useState(false);
+  const [filter, setFilter] = useState("all");
+  const [activeProduct, setActiveProduct] = useState(null);
+  const [selectedSize, setSelectedSize] = useState("");
+  const [scrolled, setScrolled] = useState(false);
 
-    useEffect(() => {
-        setTimeout(() => setLoaded(true), 100);
-        const handleScroll = () => setScrollY(window.scrollY || 0);
-        window.addEventListener("scroll", handleScroll, { passive: true });
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 48);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-        setSelectedSize(null);
-    }, [activePage]);
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [activeProduct]);
 
-    const addToBag = (productId, size) => {
-        setBag(prev => {
-            const idx = prev.findIndex(i => i.productId === productId && i.size === size);
-            if (idx >= 0) {
-                const next = [...prev];
-                next[idx] = { ...next[idx], qty: next[idx].qty + 1 };
-                return next;
-            }
-            return [...prev, { productId, size, qty: 1 }];
-        });
-        setBagOpen(true);
-    };
+  function openProduct(productId) {
+    setSelectedSize("");
+    setActiveProduct(productId);
+  }
 
-    const removeFromBag = (index) => {
-        setBag(prev => prev.filter((_, i) => i !== index));
-    };
+  function closeProduct() {
+    setSelectedSize("");
+    setActiveProduct(null);
+  }
 
-    const bagCount = bag.reduce((s, i) => s + i.qty, 0);
-    const bagTotal = bag.reduce((s, i) => {
-        const p = PRODUCTS.find(pr => pr.id === i.productId);
-        return s + (p ? p.price * i.qty : 0);
-    }, 0);
+  const product = activeProduct ? PRODUCTS.find((item) => item.id === activeProduct) : null;
+  const filteredProducts = useMemo(
+    () => (filter === "all" ? PRODUCTS : PRODUCTS.filter((item) => item.category === filter)),
+    [filter],
+  );
+  const bagCount = bag.reduce((sum, item) => sum + item.qty, 0);
+  const bagTotal = bag.reduce((sum, item) => {
+    const match = PRODUCTS.find((p) => p.id === item.productId);
+    return sum + (match ? match.price * item.qty : 0);
+  }, 0);
 
-    const filtered = filter === "all" ? PRODUCTS : PRODUCTS.filter(p => p.category === filter);
+  function addToBag(productId, size) {
+    setBag((current) => {
+      const found = current.findIndex((item) => item.productId === productId && item.size === size);
+      if (found >= 0) {
+        return current.map((item, index) => (index === found ? { ...item, qty: item.qty + 1 } : item));
+      }
+      return [...current, { productId, size, qty: 1 }];
+    });
+    setBagOpen(true);
+  }
 
-    // ── DETAIL PAGE ─────────────────────────────────────
-    if (activePage !== null) {
-        const product = PRODUCTS.find(p => p.id === activePage);
-        if (!product) { setActivePage(null); return null; }
+  function removeFromBag(index) {
+    setBag((current) => current.filter((_, itemIndex) => itemIndex !== index));
+  }
 
-        return (
-            <div style={s.page}>
-                <style>{CSS}</style>
-                {/* Detail Nav */}
-                <nav style={s.detailNav}>
-                    <a onClick={() => setActivePage(null)} className="detail-back" style={s.detailBack}>
-                        ← Back
-                    </a>
-                    <span style={s.detailLogo}>LOUNGERS</span>
-                    <button className="bag-nav-btn" style={s.bagNavBtn} onClick={() => setBagOpen(true)}>
-                        Bag <span style={s.bagBadge}>{bagCount}</span>
-                    </button>
-                </nav>
+  return (
+    <div className="site">
+      <style>{CSS}</style>
+      <Navigation
+        scrolled={scrolled}
+        dark={!product}
+        bagCount={bagCount}
+        onBag={() => setBagOpen(true)}
+        onHome={closeProduct}
+      />
 
-                {/* Product Hero */}
-                <section style={s.productHero}>
-                    <div style={{ ...s.phVisual, background: product.cardBg }}>
-                        {product.image ? (
-                            <img src={product.image} alt={product.name} style={s.phShoe} />
-                        ) : (
-                            <span style={s.phPlaceholder}>{product.name}</span>
-                        )}
-                    </div>
-                    <div style={s.phInfo}>
-                        <p style={s.phEyebrow}>Loungers Collection — {product.material}</p>
-                        <h1 style={s.phTitle}>{product.name}</h1>
-                        <p style={s.phSubtitle}>{product.subtitle} — {product.color}</p>
-                        <div style={s.phPrice}>€{product.price}</div>
+      {product ? (
+        <ProductDetail
+          product={product}
+          selectedSize={selectedSize}
+          setSelectedSize={setSelectedSize}
+          onBack={closeProduct}
+          onAdd={() => selectedSize && addToBag(product.id, selectedSize)}
+        />
+      ) : (
+        <main>
+          <Hero />
+          <FeatureStrip />
+          <Shop
+            products={filteredProducts}
+            filter={filter}
+            setFilter={setFilter}
+            onOpen={openProduct}
+            onQuickAdd={(productId) => {
+              const quickProduct = PRODUCTS.find((item) => item.id === productId);
+              addToBag(productId, quickProduct.sizes[Math.floor(quickProduct.sizes.length / 2)]);
+            }}
+          />
+          <Story />
+          <MovementBanner />
+        </main>
+      )}
 
-                        <div style={s.sizeLabel}>Select size {product.category === "schuhe" ? "(EU)" : ""}</div>
-                        <div style={s.sizes}>
-                            {product.sizes.map(sz => (
-                                <button
-                                    key={sz}
-                                    className={`size-btn${selectedSize === sz ? " active" : ""}`}
-                                    style={s.sizeBtn}
-                                    onClick={() => setSelectedSize(sz)}
-                                >
-                                    {sz}
-                                </button>
-                            ))}
-                        </div>
+      <Footer />
+      <BagDrawer
+        bag={bag}
+        open={bagOpen}
+        onClose={() => setBagOpen(false)}
+        onRemove={removeFromBag}
+        total={bagTotal}
+      />
+    </div>
+  );
+}
 
-                        <button
-                            className="add-bag-btn"
-                            style={{
-                                ...s.addBagBtn,
-                                opacity: selectedSize ? 1 : 0.5,
-                                cursor: selectedSize ? "pointer" : "not-allowed",
-                            }}
-                            onClick={() => selectedSize && addToBag(product.id, selectedSize)}
-                        >
-                            Add to Bag →
-                        </button>
+function Navigation({ scrolled, dark, bagCount, onBag, onHome }) {
+  return (
+    <nav className={`nav${scrolled ? " scrolled" : ""}${dark ? " dark" : ""}`}>
+      <div className="nav-left">
+        <a className="nav-link" href="#shop">Shop</a>
+        <a className="nav-link" href="#story">Design</a>
+        <a className="nav-link" href="#movement">Movement</a>
+      </div>
+      <button className="brand" onClick={onHome} aria-label="Zur Startseite">WAI</button>
+      <div className="nav-right">
+        <a className="nav-link" href="#story">Made in Italy</a>
+        <button className="bag-btn" onClick={onBag} aria-label="Warenkorb oeffnen">
+          <span className="bag-label">Bag</span>
+          <span className="bag-count">{bagCount}</span>
+        </button>
+      </div>
+    </nav>
+  );
+}
 
-                        <div style={s.trustStrip}>
-                            <div style={s.trustItem}><span style={s.trustLabel}>Free shipping</span><span style={s.trustValue}>Orders over €80</span></div>
-                            <div style={s.trustItem}><span style={s.trustLabel}>Free returns</span><span style={s.trustValue}>30-day policy</span></div>
-                            <div style={s.trustItem}><span style={s.trustLabel}>Made in Italy</span><span style={s.trustValue}>Since 1979</span></div>
-                        </div>
-
-                        <div style={s.descSection}>
-                            <h3 style={s.descTitle}>Description</h3>
-                            <p style={s.descBody}>{product.description}</p>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Bag Drawer */}
-                <BagDrawer bag={bag} bagOpen={bagOpen} onClose={() => setBagOpen(false)} onRemove={removeFromBag} bagTotal={bagTotal} />
-            </div>
-        );
-    }
-
-    // ── HOME PAGE ───────────────────────────────────────
-    return (
-        <div style={s.page}>
-            <style>{CSS + `\n:root { --text-color: #1C1917; --bg-color: #F7F3ED; }`}</style>
-
-            {/* Navigation */}
-            <nav style={{
-                ...s.nav,
-                background: scrollY > 60 ? "color-mix(in srgb, #F7F3ED 88%, transparent)" : "transparent",
-                backdropFilter: scrollY > 60 ? "blur(24px)" : "none",
-                WebkitBackdropFilter: scrollY > 60 ? "blur(24px)" : "none",
-                borderBottomColor: scrollY > 60 ? "rgba(28,25,23,0.1)" : "transparent",
-            }}>
-                <div style={s.navLinks}>
-                    {["Men", "Women", "Belts"].map(item => (
-                        <a key={item} href={`https://loungersway.com/collections/${item.toLowerCase()}`} className="nav-link" style={s.navLinkText}>{item}</a>
-                    ))}
-                </div>
-                <span style={s.navLogo}>LOUNGERS <span style={s.navLogoSub}>Est. 1979</span></span>
-                <div style={{ ...s.navLinks, justifyContent: "flex-end" }}>
-                    <a href="https://loungersway.com/pages/about-us" className="nav-link" style={s.navLinkText}>Story</a>
-                    <button className="bag-nav-btn" style={s.bagNavBtn} onClick={() => setBagOpen(true)}>
-                        Bag <span style={s.bagBadge}>{bagCount}</span>
-                    </button>
-                </div>
-            </nav>
-
-            {/* Hero */}
-            <section className="hero-section" style={s.hero}>
-                <div style={{ ...s.heroTop, animation: loaded ? "fadeUp 1.2s cubic-bezier(0.16,1,0.3,1) forwards" : "none", opacity: loaded ? 1 : 0 }}>
-                    <p style={s.heroEyebrow}>Handcrafted in Italy — Est. 1979</p>
-                    <h1 style={s.heroTitle}>The Art of<br /><em style={s.heroTitleEm}>Walking Well</em></h1>
-                </div>
-                <div style={s.heroCenter}>
-                    <div style={{ ...s.heroShoeWrap, animation: loaded ? "float 7s ease-in-out infinite" : "none", opacity: loaded ? 1 : 0, transition: "opacity 1s ease 0.4s" }}>
-                        <img src="https://loungersway.com/cdn/shop/products/ACCMNAP_ALL_TAN_sideview_1024x1024.jpg?v=1678185665" alt="Loungers Accelerator" style={s.heroShoeImg} />
-                    </div>
-                </div>
-                <div style={{ ...s.heroBottom, animation: loaded ? "fadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.5s both" : "none" }}>
-                    <p style={s.heroSub}>Luxury driving shoes & slippers, designed in London, handmade in Italy.</p>
-                    <a href="#shop" className="hero-cta-pill" style={s.heroCtaPill}>Shop Collection <span className="arr">→</span></a>
-                    <div style={s.heroScroll}><div style={s.scrollLine} /><span>Scroll</span></div>
-                </div>
-            </section>
-
-            {/* Features Strip */}
-            <section style={s.featureStrip}>
-                {FEATURES.map((f, i) => (
-                    <div key={i} className="feature-card" style={{ ...s.featureItem, animation: loaded ? `fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) ${0.2 + i * 0.15}s both` : "none" }}>
-                        <span style={s.featureIcon}>{f.icon}</span>
-                        <span style={s.featureTitle}>{f.title}</span>
-                        <span style={s.featureDesc}>{f.desc}</span>
-                    </div>
-                ))}
-            </section>
-
-            {/* Shop Grid */}
-            <section id="shop" style={s.shopSection}>
-                <div style={s.shopHeader}>
-                    <div>
-                        <div style={s.pillTag}>SS 2026</div>
-                        <h2 style={s.sectionTitle}>The Collection</h2>
-                    </div>
-                    <div style={s.shopHeaderRight}>
-                        <div style={s.filters}>
-                            {[
-                                { key: "all", label: "All" },
-                                { key: "schuhe", label: "Schuhe" },
-                                { key: "pullover", label: "Pullover" },
-                            ].map(f => (
-                                <button
-                                    key={f.key}
-                                    onClick={() => setFilter(f.key)}
-                                    className="filter-pill"
-                                    style={{
-                                        ...s.filterBtn,
-                                        color: filter === f.key ? "#1C1917" : "#7A6E65",
-                                        borderColor: filter === f.key ? "#1C1917" : "rgba(28,25,23,0.12)",
-                                        background: filter === f.key ? "rgba(28,25,23,0.06)" : "transparent",
-                                    }}
-                                >
-                                    {f.label}
-                                </button>
-                            ))}
-                        </div>
-                        <a href="https://loungersway.com/collections/all" className="view-all-link" style={s.viewAll}>View all →</a>
-                    </div>
-                </div>
-
-                <div style={s.productGrid}>
-                    {filtered.map((product, i) => (
-                        <div
-                            key={product.id}
-                            className="p-card"
-                            style={{ ...s.pCard, animation: `fadeUp 0.7s cubic-bezier(0.16,1,0.3,1) ${i * 0.08}s both` }}
-                            onClick={() => setActivePage(product.id)}
-                        >
-                            <div style={s.pCardImg}>
-                                <div className="p-card-img-inner" style={{ ...s.pCardImgInner, background: product.cardBg }}>
-                                    {product.image ? (
-                                        <img src={product.image} alt={product.name} className="p-card-shoe" style={s.pCardShoe} />
-                                    ) : (
-                                        <span style={s.pCardPlaceholder}>{product.name}</span>
-                                    )}
-                                </div>
-                                {product.tag && <span style={s.pCardBadge}>{product.tag}</span>}
-                                <button
-                                    className="quick-add"
-                                    style={s.quickAdd}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        addToBag(product.id, product.sizes[Math.floor(product.sizes.length / 2)]);
-                                    }}
-                                >
-                                    <PlusIcon size={14} />
-                                </button>
-                            </div>
-                            <div style={s.pCardInfo}>
-                                <div>
-                                    <div style={s.pCardName}>{product.name}</div>
-                                    <div style={s.pCardSub}>{product.subtitle} — {product.color}</div>
-                                </div>
-                                <div style={s.pCardPrice}>€{product.price}</div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </section>
-
-            {/* Craftsmanship Story */}
-            <section style={s.storySection}>
-                <div style={s.storyGrid}>
-                    <div style={s.storyText}>
-                        <span style={s.storyLabel}>Our Craft</span>
-                        <h2 style={s.storyTitle}>Where London Design<br />Meets Italian Mastery</h2>
-                        <div style={s.storyLine} />
-                        <p style={s.storyPara}>Every pair of Loungers begins with a vision in London and comes to life in the hands of Italian master craftsmen who have perfected their art over generations. Using only the finest Nappa and calfskin leathers, each shoe is hand-stitched with meticulous attention to detail.</p>
-                        <p style={s.storyPara}>The result is footwear that transcends the ordinary — shoes you can drive in, lounge in, travel in, and live in. With Vibram® HydroGrip soles and Sorbothane® cushioning, luxury has never felt this comfortable.</p>
-                        <a href="https://loungersway.com/pages/about-us" className="cta-link" style={s.storyLink}>Discover Our Story</a>
-                    </div>
-                    <div style={s.storyImageGrid}>
-                        <div style={s.storyImg1}>
-                            <img src="https://loungersway.com/cdn/shop/files/Capture_3f3baa08-9e72-470d-9f6c-656c4001ee7c_643x640.jpg?v=1637065532" alt="Craftsmanship" style={s.storyImage} />
-                        </div>
-                        <div style={s.storyImg2}>
-                            <img src="https://loungersway.com/cdn/shop/files/ig_0410_73a99501-9a53-4e2f-ab85-36327407be75_651x640.jpg?v=1634287927" alt="Italian Artisan" style={s.storyImage} />
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Sustainability */}
-            <section style={s.sustainSection}>
-                <div style={s.sustainInner}>
-                    <h2 style={s.sustainTitle}>One Pair. One Tree. One Promise.</h2>
-                    <p style={s.sustainDesc}>For every pair purchased, we plant a tree with Beyond Trees and protect five existing trees in the rainforest with OneTribe. Because walking well means treading lightly.</p>
-                    <a href="https://loungersway.com/pages/the-power-of-sustainable-choices" className="cta-link" style={s.sustainLink}>Our Commitment →</a>
-                </div>
-            </section>
-
-            {/* Footer */}
-            <footer style={s.footer}>
-                <div style={s.footerInner}>
-                    <div>
-                        <span style={s.footerLogo}>LOUNGERS</span>
-                        <p style={s.footerTagline}>Designed in London. Handmade in Italy.</p>
-                    </div>
-                    <div style={s.footerCols}>
-                        <div style={s.footerCol}>
-                            <h4 style={s.footerColTitle}>Shop</h4>
-                            {["Men's Collection", "Women's Collection", "Belts", "Pullovers"].map(item => (
-                                <a key={item} href="https://loungersway.com/collections/all" style={s.footerLink}>{item}</a>
-                            ))}
-                        </div>
-                        <div style={s.footerCol}>
-                            <h4 style={s.footerColTitle}>Company</h4>
-                            {["About Us", "Sustainability", "B2B & Franchise"].map(item => (
-                                <a key={item} href="https://loungersway.com/pages/about-us" style={s.footerLink}>{item}</a>
-                            ))}
-                        </div>
-                        <div style={s.footerCol}>
-                            <h4 style={s.footerColTitle}>Support</h4>
-                            {["Contact", "FAQ", "Shipping", "Returns"].map(item => (
-                                <a key={item} href="https://loungersway.com/pages/contact-us" style={s.footerLink}>{item}</a>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-                <div style={s.footerBottom}>
-                    <span style={s.footerCopy}>© 2026 Loungers — Conscious Walk Ltd. London, UK</span>
-                    <a href="https://www.instagram.com/loungersway/" style={s.footerSocialLink}>Instagram</a>
-                </div>
-            </footer>
-
-            {/* Bag Drawer */}
-            <BagDrawer bag={bag} bagOpen={bagOpen} onClose={() => setBagOpen(false)} onRemove={removeFromBag} bagTotal={bagTotal} />
+function Hero() {
+  return (
+    <section className="hero">
+      <img className="hero-bg" src="/wai4-opt.jpeg" alt="WAI Feel Shoe in einer ruhigen Interior-Szene" />
+      <div className="hero-content">
+        <div className="hero-copy">
+          <p className="eyebrow">Feel shoes for natural movement</p>
+          <h1>Natural freedom, refined.</h1>
+          <p className="hero-text">
+            WAI verbindet den Komfort eines Hausschuhs mit der Ruhe eines reduzierten Loafers:
+            leicht, flexibel und gemacht fuer Wege drinnen, draussen und unterwegs.
+          </p>
+          <div className="hero-actions">
+            <a className="primary-btn" href="#shop">Shop Collection</a>
+            <a className="secondary-btn" href="#story">Discover WAI</a>
+          </div>
         </div>
-    );
+        <p className="hero-proof">
+          IVIVI Barefoot Technology, textile Struktur und eine flexible Sohle, die den Fuss arbeiten laesst.
+        </p>
+      </div>
+    </section>
+  );
 }
 
-// ── BAG DRAWER ──────────────────────────────────────────
-function BagDrawer({ bag, bagOpen, onClose, onRemove, bagTotal }) {
-    return (
-        <>
-            <div className={`bag-overlay${bagOpen ? " open" : ""}`} style={s.bagOverlay} onClick={onClose} />
-            <div className={`bag-drawer${bagOpen ? " open" : ""}`} style={s.bagDrawer}>
-                <div style={s.bagHead}>
-                    <h2 style={s.bagHeadTitle}>Your Bag</h2>
-                    <button className="cart-close-btn" style={s.bagClose} onClick={onClose}>✕</button>
+function FeatureStrip() {
+  return (
+    <section className="feature-strip" aria-label="WAI Vorteile">
+      {FEATURES.map(([number, title, text]) => (
+        <div className="feature" key={number}>
+          <span className="feature-number">{number}</span>
+          <strong>{title}</strong>
+          <span>{text}</span>
+        </div>
+      ))}
+    </section>
+  );
+}
+
+function Shop({ products, filter, setFilter, onOpen, onQuickAdd }) {
+  const filters = [
+    ["all", "All"],
+    ["home", "Home"],
+    ["travel", "Travel"],
+    ["tech", "Flex"],
+  ];
+
+  return (
+    <section className="section" id="shop">
+      <div className="section-inner">
+        <div className="section-head">
+          <div>
+            <p className="eyebrow">WAI Collection</p>
+            <h2>Clean shapes. Real comfort.</h2>
+            <p className="section-note">
+              Der Shop setzt die Produktbilder groesser, klarer und ruhiger ein. Kein lauter Katalog,
+              sondern eine kompakte Auswahl mit Fokus auf Material, Bewegung und Alltag.
+            </p>
+          </div>
+          <div className="filters" role="tablist" aria-label="Produkte filtern">
+            {filters.map(([key, label]) => (
+              <button
+                className={`filter${filter === key ? " active" : ""}`}
+                key={key}
+                onClick={() => setFilter(key)}
+                type="button"
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="shop-grid">
+          {products.map((product, index) => (
+            <article
+              className="product-card"
+              key={product.id}
+              onClick={() => onOpen(product.id)}
+              style={{ animationDelay: `${index * 70}ms` }}
+            >
+              <div className="product-media">
+                {product.tag && <span className="product-tag">{product.tag}</span>}
+                <img className="main-img" src={product.image} alt={product.name} />
+                <img className="hover-img" src={product.hoverImage} alt="" aria-hidden="true" />
+                <button
+                  className="quick-add"
+                  type="button"
+                  aria-label={`${product.name} schnell in den Warenkorb legen`}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onQuickAdd(product.id);
+                  }}
+                >
+                  +
+                </button>
+              </div>
+              <div className="product-info">
+                <div className="product-title-row">
+                  <div>
+                    <h3 className="product-name">{product.name}</h3>
+                    <p className="product-sub">{product.subtitle} · {product.color}</p>
+                  </div>
+                  <span className="price">EUR {product.price}</span>
                 </div>
-                <div style={s.bagBody}>
-                    {bag.length === 0 ? (
-                        <div style={s.bagEmpty}>
-                            <p style={s.bagEmptyTitle}>Your bag is empty.</p>
-                            <span style={s.bagEmptySub}>Add something beautiful.</span>
-                        </div>
-                    ) : (
-                        bag.map((item, i) => {
-                            const p = PRODUCTS.find(pr => pr.id === item.productId);
-                            if (!p) return null;
-                            return (
-                                <div key={i} style={s.ciRow}>
-                                    <div style={{ ...s.ciThumb, background: p.cardBg }}>
-                                        {p.image ? <img src={p.image} alt={p.name} style={s.ciThumbImg} /> : <span style={s.ciThumbText}>{p.name[0]}</span>}
-                                    </div>
-                                    <div style={s.ciInfo}>
-                                        <div style={s.ciName}>{p.name}</div>
-                                        <div style={s.ciMeta}>Size {item.size} — €{p.price} × {item.qty}</div>
-                                    </div>
-                                    <button className="ci-del" style={s.ciDel} onClick={() => onRemove(i)}>×</button>
-                                </div>
-                            );
-                        })
-                    )}
+                <div className="product-meta">
+                  <span>{product.material}</span>
+                  <span>EU {product.sizes[0]}-{product.sizes[product.sizes.length - 1]}</span>
                 </div>
-                {bag.length > 0 && (
-                    <div style={s.bagFoot}>
-                        <div style={s.bagTotalRow}>
-                            <span style={s.bagTotalLabel}>Total</span>
-                            <strong style={s.bagTotalValue}>€{bagTotal}</strong>
-                        </div>
-                        <button className="checkout-btn" style={s.checkoutBtn}>Proceed to Checkout →</button>
-                    </div>
-                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Story() {
+  return (
+    <section className="section story" id="story">
+      <div className="section-inner story-layout">
+        <div className="story-copy">
+          <p className="eyebrow">Designed with restraint</p>
+          <h2>Less shoe. More feel.</h2>
+          <p>
+            Die Website spricht jetzt staerker ueber das, was man am Produkt sieht:
+            textile Oberflaechen, flexible Sohlen und eine Formsprache, die nicht nach Performance-Sneaker aussieht.
+          </p>
+          <p>
+            WAI bleibt visuell warm und hochwertig, aber die Komposition ist direkter. Grosse Motive,
+            klare Shopkarten und kurze Texte lassen die Bilder arbeiten.
+          </p>
+          <a className="story-link" href="#shop">Zur Kollektion</a>
+        </div>
+        <div className="story-images">
+          <figure className="story-image large">
+            <img src="/wai5-opt.jpeg" alt="WAI Schuhe mit flexibler Sohle auf Holz" />
+          </figure>
+          <figure className="story-image small">
+            <img src="/wai6-opt.jpeg" alt="WAI Produktdetails mit rollbarer Sohle" />
+          </figure>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MovementBanner() {
+  return (
+    <section className="banner" id="movement">
+      <img src="/wai7-opt.jpeg" alt="WAI Schuhe beim Reisen" />
+      <div className="banner-content">
+        <p className="eyebrow">Home, airport, weekend</p>
+        <h2>One pair for the in-between.</h2>
+        <p>
+          Fuer Orte, an denen normale Schuhe zu hart und Hausschuhe zu wenig sind.
+          Leicht am Fuss, ruhig im Look, schnell im Gepaeck.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function ProductDetail({ product, selectedSize, setSelectedSize, onBack, onAdd }) {
+  return (
+    <main className="detail">
+      <div className="detail-grid">
+        <div className="detail-media">
+          <img src={product.hoverImage || product.image} alt={product.name} />
+        </div>
+        <div className="detail-panel">
+          <button className="back" type="button" onClick={onBack}>Back to shop</button>
+          <p className="eyebrow">{product.material}</p>
+          <h1>{product.name}</h1>
+          <p className="detail-sub">{product.subtitle} · {product.color}</p>
+          <div className="detail-price">EUR {product.price}</div>
+
+          <div className="size-label">Select size</div>
+          <div className="sizes">
+            {product.sizes.map((size) => (
+              <button
+                className={`size${selectedSize === size ? " active" : ""}`}
+                key={size}
+                type="button"
+                onClick={() => setSelectedSize(size)}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
+
+          <button className="add-to-bag" type="button" disabled={!selectedSize} onClick={onAdd}>
+            Add to Bag
+          </button>
+
+          <p className="detail-copy">{product.description}</p>
+        </div>
+      </div>
+    </main>
+  );
+}
+
+function BagDrawer({ bag, open, onClose, onRemove, total }) {
+  return (
+    <>
+      <div className={`drawer-overlay${open ? " open" : ""}`} onClick={onClose} />
+      <aside className={`drawer${open ? " open" : ""}`} aria-label="Warenkorb">
+        <div className="drawer-head">
+          <h2>Your Bag</h2>
+          <button className="close" type="button" onClick={onClose} aria-label="Warenkorb schliessen">×</button>
+        </div>
+        <div className="drawer-body">
+          {bag.length === 0 ? (
+            <div className="empty">Your bag is empty.</div>
+          ) : (
+            bag.map((item, index) => {
+              const product = PRODUCTS.find((p) => p.id === item.productId);
+              if (!product) return null;
+              return (
+                <div className="cart-row" key={`${item.productId}-${item.size}`}>
+                  <img src={product.image} alt={product.name} />
+                  <div>
+                    <h3>{product.name}</h3>
+                    <p>Size {item.size} · EUR {product.price} · Qty {item.qty}</p>
+                  </div>
+                  <button className="remove" type="button" onClick={() => onRemove(index)} aria-label="Produkt entfernen">×</button>
+                </div>
+              );
+            })
+          )}
+        </div>
+        {bag.length > 0 && (
+          <div className="drawer-foot">
+            <div className="total">
+              <span>Total</span>
+              <strong>EUR {total}</strong>
             </div>
-        </>
-    );
+            <button className="checkout" type="button">Proceed to Checkout</button>
+          </div>
+        )}
+      </aside>
+    </>
+  );
 }
 
-// ── STYLES ──────────────────────────────────────────────
-const SERIF = "'Cormorant Garamond', Georgia, serif";
-const SANS = "'DM Sans', system-ui, sans-serif";
-
-const s = {
-    page: { fontFamily: SANS, background: "#F7F3ED", color: "#1C1917", fontWeight: 300, minHeight: "100vh", overflowX: "hidden" },
-
-    // Nav
-    nav: {
-        position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "28px 52px",
-        borderBottom: "1px solid transparent",
-        transition: "background 0.5s, backdrop-filter 0.5s, padding 0.4s, border-color 0.5s",
-    },
-    navLinks: { display: "flex", gap: 44, alignItems: "center" },
-    navLinkText: { fontSize: 11, letterSpacing: "0.15em", textTransform: "uppercase", color: "#1C1917", textDecoration: "none", cursor: "pointer" },
-    navLogo: { fontFamily: SERIF, fontSize: 30, fontWeight: 400, letterSpacing: "0.18em", color: "#1C1917" },
-    navLogoSub: { fontSize: 11, letterSpacing: "0.2em", opacity: 0.35, verticalAlign: "middle", fontFamily: SANS, fontWeight: 300 },
-    bagNavBtn: {
-        display: "flex", alignItems: "center", gap: 8,
-        padding: "10px 22px", border: "1px solid rgba(28,25,23,0.1)", borderRadius: 100,
-        background: "none", color: "#1C1917", fontFamily: SANS,
-        fontSize: 11, letterSpacing: "0.15em", textTransform: "uppercase", cursor: "pointer",
-    },
-    bagBadge: {
-        background: "#1C1917", color: "#F7F3ED",
-        width: 18, height: 18, borderRadius: "50%", fontSize: 10,
-        display: "inline-flex", alignItems: "center", justifyContent: "center",
-    },
-
-    // Hero
-    hero: { minHeight: "100svh", display: "grid", gridTemplateRows: "auto 1fr auto", alignItems: "start", textAlign: "center", padding: "0 48px 80px", overflow: "hidden", position: "relative" },
-    heroTop: { paddingTop: 140, display: "flex", flexDirection: "column", alignItems: "center" },
-    heroEyebrow: { fontSize: 10, letterSpacing: "0.38em", textTransform: "uppercase", color: "#7A6E65", marginBottom: 36 },
-    heroTitle: { fontFamily: SERIF, fontSize: "clamp(80px, 12vw, 160px)", fontWeight: 300, lineHeight: 0.9, letterSpacing: "-0.02em", color: "#1C1917", marginBottom: 40 },
-    heroTitleEm: { fontStyle: "italic", fontWeight: 300, color: "#B8A898" },
-    heroCenter: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" },
-    heroShoeWrap: { width: "min(560px, 75vw)", margin: "0 auto", filter: "drop-shadow(0 50px 80px rgba(0,0,0,0.11))", willChange: "transform" },
-    heroShoeImg: { width: "100%", objectFit: "contain" },
-    heroBottom: { display: "flex", flexDirection: "column", alignItems: "center", gap: 28 },
-    heroSub: { fontSize: 16, color: "#7A6E65", letterSpacing: "0.08em", maxWidth: 440 },
-    heroCtaPill: { display: "inline-flex", alignItems: "center", gap: 14, padding: "18px 52px", background: "#1C1917", color: "#F7F3ED", textDecoration: "none", fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", borderRadius: 100, fontFamily: SANS },
-    heroScroll: { display: "flex", flexDirection: "column", alignItems: "center", gap: 10, color: "#B8A898", fontSize: 9, letterSpacing: "0.28em", textTransform: "uppercase", opacity: 0.55 },
-    scrollLine: { width: 1, height: 44, background: "linear-gradient(to bottom, #B8A898, transparent)", animation: "pulseLine 2.4s ease-in-out infinite" },
-
-    // Features
-    featureStrip: { display: "flex", justifyContent: "center", gap: 0, padding: "0 40px", maxWidth: 1200, margin: "0 auto", borderTop: "1px solid rgba(28,25,23,0.08)", borderBottom: "1px solid rgba(28,25,23,0.08)" },
-    featureItem: { flex: 1, textAlign: "center", padding: "40px 24px", display: "flex", flexDirection: "column", alignItems: "center", gap: 8, borderRight: "1px solid rgba(28,25,23,0.06)", cursor: "default" },
-    featureIcon: { fontSize: 20, color: "#B8A898", marginBottom: 4 },
-    featureTitle: { fontSize: 12, fontWeight: 400, letterSpacing: "0.12em", textTransform: "uppercase", color: "#1C1917" },
-    featureDesc: { fontSize: 12, fontWeight: 300, color: "#7A6E65" },
-
-    // Shop
-    shopSection: { padding: "120px 52px 100px", maxWidth: 1400, margin: "0 auto" },
-    shopHeader: { marginBottom: 56, display: "flex", alignItems: "flex-end", justifyContent: "space-between" },
-    pillTag: { display: "inline-block", padding: "7px 22px", border: "1px solid rgba(28,25,23,0.12)", borderRadius: 100, fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#7A6E65", marginBottom: 20 },
-    sectionTitle: { fontFamily: SERIF, fontSize: "clamp(40px, 5vw, 72px)", fontWeight: 300, lineHeight: 1.05, color: "#1C1917" },
-    shopHeaderRight: { display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 16 },
-    filters: { display: "flex", gap: 10 },
-    filterBtn: { background: "none", border: "1px solid rgba(28,25,23,0.12)", borderRadius: 100, fontSize: 10, fontWeight: 400, letterSpacing: "0.15em", textTransform: "uppercase", cursor: "pointer", padding: "8px 20px", fontFamily: SANS },
-    viewAll: { fontSize: 11, letterSpacing: "0.15em", textTransform: "uppercase", color: "#7A6E65", textDecoration: "none", borderBottom: "1px solid rgba(28,25,23,0.15)", paddingBottom: 2 },
-
-    productGrid: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 },
-    pCard: { cursor: "pointer" },
-    pCardImg: { width: "100%", aspectRatio: "4/5", borderRadius: 6, overflow: "hidden", position: "relative", marginBottom: 20 },
-    pCardImgInner: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" },
-    pCardShoe: { width: "78%", objectFit: "contain", filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.13))" },
-    pCardPlaceholder: { fontFamily: SERIF, fontSize: 36, fontWeight: 300, fontStyle: "italic", color: "rgba(28,25,23,0.12)", textAlign: "center", lineHeight: 1.2 },
-    pCardBadge: { position: "absolute", top: 16, left: 16, padding: "5px 12px", background: "rgba(247,243,237,0.9)", borderRadius: 100, fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "#1C1917" },
-    quickAdd: {
-        position: "absolute", bottom: 16, right: 16,
-        width: 40, height: 40, borderRadius: "50%",
-        border: "1px solid rgba(28,25,23,0.15)", background: "rgba(247,243,237,0.92)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        cursor: "pointer", color: "#1C1917",
-    },
-    pCardInfo: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 },
-    pCardName: { fontFamily: SERIF, fontSize: 22, fontWeight: 400, color: "#1C1917", marginBottom: 4 },
-    pCardSub: { fontSize: 12, color: "#7A6E65", letterSpacing: "0.05em" },
-    pCardPrice: { fontSize: 15, color: "#7A6E65", whiteSpace: "nowrap" },
-
-    // Story
-    storySection: { padding: "100px 40px", background: "#FFFFFF" },
-    storyGrid: { display: "flex", gap: 80, maxWidth: 1200, margin: "0 auto", alignItems: "center" },
-    storyText: { flex: 1 },
-    storyLabel: { fontSize: 10, fontWeight: 400, letterSpacing: "0.25em", textTransform: "uppercase", color: "#7A6E65", display: "block", marginBottom: 20 },
-    storyTitle: { fontFamily: SERIF, fontSize: 38, fontWeight: 300, lineHeight: 1.2, color: "#1C1917", marginBottom: 24 },
-    storyLine: { width: 50, height: 1, background: "#B8A898", marginBottom: 28 },
-    storyPara: { fontSize: 15, fontWeight: 300, lineHeight: 1.8, color: "#7A6E65", marginBottom: 20 },
-    storyLink: { fontSize: 12, fontWeight: 400, letterSpacing: "0.18em", textTransform: "uppercase", color: "#1C1917", textDecoration: "none", paddingBottom: 4, marginTop: 12, display: "inline-block" },
-    storyImageGrid: { flex: 1, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 },
-    storyImg1: { borderRadius: 4, overflow: "hidden", aspectRatio: "3/4" },
-    storyImg2: { borderRadius: 4, overflow: "hidden", aspectRatio: "3/4", marginTop: 40 },
-    storyImage: { width: "100%", height: "100%", objectFit: "cover" },
-
-    // Sustainability
-    sustainSection: { padding: "100px 40px", background: "#EDE7DE" },
-    sustainInner: { maxWidth: 680, margin: "0 auto", textAlign: "center" },
-    sustainTitle: { fontFamily: SERIF, fontSize: 36, fontWeight: 300, color: "#1C1917", marginBottom: 20 },
-    sustainDesc: { fontSize: 15, fontWeight: 300, lineHeight: 1.8, color: "#7A6E65", marginBottom: 32 },
-    sustainLink: { fontSize: 12, fontWeight: 400, letterSpacing: "0.18em", textTransform: "uppercase", color: "#1C1917", textDecoration: "none", paddingBottom: 4 },
-
-    // Footer
-    footer: { padding: "80px 52px 48px", borderTop: "1px solid rgba(28,25,23,0.08)" },
-    footerInner: { display: "flex", justifyContent: "space-between", maxWidth: 1200, margin: "0 auto", paddingBottom: 60, borderBottom: "1px solid rgba(28,25,23,0.08)" },
-    footerLogo: { fontFamily: SERIF, fontSize: 54, fontWeight: 300, color: "#1C1917", lineHeight: 1, marginBottom: 20, letterSpacing: "0.08em", display: "block" },
-    footerTagline: { fontSize: 13, color: "#7A6E65", lineHeight: 1.85, maxWidth: 220 },
-    footerCols: { display: "flex", gap: 80 },
-    footerCol: { display: "flex", flexDirection: "column", gap: 12 },
-    footerColTitle: { fontSize: 10, letterSpacing: "0.22em", textTransform: "uppercase", color: "#7A6E65", marginBottom: 10 },
-    footerLink: { fontSize: 14, color: "#1C1917", textDecoration: "none", opacity: 0.62 },
-    footerBottom: { display: "flex", justifyContent: "space-between", maxWidth: 1200, margin: "0 auto", paddingTop: 40, fontSize: 11, color: "#7A6E65" },
-    footerCopy: { fontSize: 11, fontWeight: 300, color: "#7A6E65" },
-    footerSocialLink: { fontSize: 12, fontWeight: 300, color: "#7A6E65", textDecoration: "none", letterSpacing: "0.1em" },
-
-    // Detail page
-    detailNav: {
-        position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "20px 52px",
-        background: "color-mix(in srgb, #F7F3ED 88%, transparent)",
-        backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)",
-        borderBottom: "1px solid rgba(28,25,23,0.1)",
-    },
-    detailBack: { display: "flex", alignItems: "center", gap: 8, fontSize: 11, letterSpacing: "0.15em", textTransform: "uppercase", color: "#1C1917", textDecoration: "none", cursor: "pointer" },
-    detailLogo: { fontFamily: SERIF, fontSize: 28, fontWeight: 400, letterSpacing: "0.18em", color: "#1C1917" },
-    productHero: { minHeight: "100svh", paddingTop: 80, display: "grid", gridTemplateColumns: "1fr 1fr" },
-    phVisual: { position: "relative", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100svh" },
-    phShoe: { width: "75%", objectFit: "contain", filter: "drop-shadow(0 40px 70px rgba(0,0,0,0.12))" },
-    phPlaceholder: { fontFamily: SERIF, fontSize: 64, fontWeight: 300, fontStyle: "italic", color: "rgba(28,25,23,0.1)", textAlign: "center", lineHeight: 1.1 },
-    phInfo: { padding: "120px 72px 80px 64px", display: "flex", flexDirection: "column", justifyContent: "center" },
-    phEyebrow: { fontSize: 10, letterSpacing: "0.32em", textTransform: "uppercase", color: "#7A6E65", marginBottom: 24 },
-    phTitle: { fontFamily: SERIF, fontSize: "clamp(56px, 5.5vw, 88px)", fontWeight: 300, lineHeight: 0.95, marginBottom: 12 },
-    phSubtitle: { fontSize: 15, color: "#7A6E65", marginBottom: 40, letterSpacing: "0.05em" },
-    phPrice: { fontFamily: SERIF, fontSize: 36, fontWeight: 300, marginBottom: 40, color: "#1C1917" },
-    sizeLabel: { fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "#7A6E65", marginBottom: 14 },
-    sizes: { display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 36 },
-    sizeBtn: { width: 48, height: 48, borderRadius: "50%", border: "1px solid rgba(28,25,23,0.12)", background: "none", fontSize: 12, color: "#1C1917", cursor: "pointer", fontFamily: SANS },
-    addBagBtn: {
-        display: "flex", alignItems: "center", justifyContent: "center", gap: 12,
-        width: "100%", padding: 20, background: "#1C1917", color: "#F7F3ED",
-        border: "none", borderRadius: 100, fontSize: 12, letterSpacing: "0.2em",
-        textTransform: "uppercase", fontFamily: SANS, marginBottom: 32,
-    },
-    trustStrip: { display: "flex", gap: 28, paddingTop: 32, borderTop: "1px solid rgba(28,25,23,0.08)" },
-    trustItem: { display: "flex", flexDirection: "column", gap: 4 },
-    trustLabel: { fontSize: 11, letterSpacing: "0.15em", textTransform: "uppercase", color: "#1C1917" },
-    trustValue: { fontSize: 12, color: "#7A6E65" },
-    descSection: { marginTop: 40, paddingTop: 32, borderTop: "1px solid rgba(28,25,23,0.08)" },
-    descTitle: { fontSize: 12, letterSpacing: "0.15em", textTransform: "uppercase", color: "#1C1917", marginBottom: 16 },
-    descBody: { fontSize: 14, lineHeight: 1.9, color: "#7A6E65" },
-
-    // Bag drawer
-    bagOverlay: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.38)", zIndex: 200 },
-    bagDrawer: { position: "fixed", top: 0, right: 0, bottom: 0, width: 420, background: "#F7F3ED", zIndex: 201, display: "flex", flexDirection: "column", borderLeft: "1px solid rgba(28,25,23,0.1)" },
-    bagHead: { padding: "32px 32px 24px", borderBottom: "1px solid rgba(28,25,23,0.08)", display: "flex", justifyContent: "space-between", alignItems: "center" },
-    bagHeadTitle: { fontFamily: SERIF, fontSize: 26, fontWeight: 400, color: "#1C1917" },
-    bagClose: { background: "none", border: "none", width: 36, height: 36, borderRadius: "50%", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#7A6E65", fontSize: 20 },
-    bagBody: { flex: 1, overflowY: "auto", padding: "24px 32px" },
-    bagEmpty: { textAlign: "center", padding: "80px 0" },
-    bagEmptyTitle: { fontFamily: SERIF, fontSize: 22, color: "#7A6E65", fontStyle: "italic" },
-    bagEmptySub: { fontSize: 12, color: "#7A6E65", display: "block", marginTop: 8, letterSpacing: "0.08em" },
-    ciRow: { display: "flex", gap: 16, padding: "20px 0", borderBottom: "1px solid rgba(28,25,23,0.08)" },
-    ciThumb: { width: 76, height: 76, borderRadius: 4, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" },
-    ciThumbImg: { width: "100%", height: "100%", objectFit: "contain" },
-    ciThumbText: { fontFamily: SERIF, fontSize: 28, fontWeight: 300, color: "rgba(28,25,23,0.2)" },
-    ciInfo: { flex: 1 },
-    ciName: { fontFamily: SERIF, fontSize: 18, color: "#1C1917", marginBottom: 4 },
-    ciMeta: { fontSize: 13, color: "#7A6E65" },
-    ciDel: { background: "none", border: "none", color: "#7A6E65", cursor: "pointer", fontSize: 18, alignSelf: "flex-start", marginTop: 2 },
-    bagFoot: { padding: "24px 32px 40px", borderTop: "1px solid rgba(28,25,23,0.08)" },
-    bagTotalRow: { display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 20 },
-    bagTotalLabel: { fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: "#7A6E65" },
-    bagTotalValue: { fontFamily: SERIF, fontSize: 30, fontWeight: 400, color: "#1C1917" },
-    checkoutBtn: { display: "block", width: "100%", padding: 18, background: "#1C1917", color: "#F7F3ED", border: "none", borderRadius: 100, fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", cursor: "pointer", fontFamily: SANS },
-};
+function Footer() {
+  return (
+    <footer className="footer">
+      <div className="footer-inner">
+        <div>
+          <p className="footer-brand">WAI</p>
+          <p>Feel Shoes fuer natuerliche Bewegung. Ruhig im Design, leicht am Fuss.</p>
+        </div>
+        <div className="footer-links">
+          <a href="#shop">Shop</a>
+          <a href="#story">Design</a>
+          <a href="#movement">Movement</a>
+        </div>
+      </div>
+    </footer>
+  );
+}
