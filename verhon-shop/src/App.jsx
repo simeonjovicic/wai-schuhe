@@ -9,12 +9,12 @@ const PRODUCTS = [
     color: "Indigo",
     material: "IVIVI Barefoot Textile",
     category: "home",
-    image: "/wai13-opt.jpeg",
-    hoverImage: "/wai9-opt.jpeg",
+    image: "/wai_front.jpeg",
+    hoverImage: "/wai_behind.jpeg",
     tag: "Signature",
     sizes: ["36", "37", "38", "39", "40", "41", "42", "43", "44", "45"],
     description:
-      "Ein leichter Feel Shoe fuer Zuhause, den Morgen, das Studio und alle Momente dazwischen. Flexibel, atmungsaktiv und so reduziert konstruiert, dass sich der Schuh kaum in den Vordergrund drueckt.",
+      "Ein leichter Feel Shoe für Zuhause, den Morgen, das Studio und alle Momente dazwischen. Flexibel, atmungsaktiv und so reduziert konstruiert, dass sich der Schuh kaum in den Vordergrund drueckt.",
   },
   {
     id: 2,
@@ -24,12 +24,12 @@ const PRODUCTS = [
     color: "Deep Navy",
     material: "Flexible textile upper",
     category: "travel",
-    image: "/wai7-opt.jpeg",
-    hoverImage: "/wai8-opt.jpeg",
+    image: "/wai1_front.jpeg",
+    hoverImage: "/wai1_behind.jpeg",
     tag: "Travel",
     sizes: ["38", "39", "40", "41", "42", "43", "44", "45"],
     description:
-      "Gemacht fuer Wege, Wartezeiten und leichte Routinen unterwegs. Die flexible Konstruktion laesst sich flach verstauen und bleibt trotzdem stabil genug fuer den ganzen Tag.",
+      "Gemacht für Wege, Wartezeiten und leichte Routinen unterwegs. Die flexible Konstruktion laesst sich flach verstauen und bleibt trotzdem stabil genug für den ganzen Tag.",
   },
   {
     id: 3,
@@ -39,8 +39,8 @@ const PRODUCTS = [
     color: "Blue Canvas",
     material: "IVIVI sole system",
     category: "tech",
-    image: "/wai6-opt.jpeg",
-    hoverImage: "/wai5-opt.jpeg",
+    image: "/wai2_front.jpeg",
+    hoverImage: "/wai2_behind.jpeg",
     tag: "Flexible",
     sizes: ["37", "38", "39", "40", "41", "42", "43", "44"],
     description:
@@ -54,12 +54,12 @@ const PRODUCTS = [
     color: "Washed Blue",
     material: "Soft-woven textile",
     category: "home",
-    image: "/wai10-opt.jpeg",
-    hoverImage: "/wai11-opt.jpeg",
+    image: "/wai3_front.jpeg",
+    hoverImage: "/wai3_behind.jpeg",
     tag: null,
     sizes: ["36", "37", "38", "39", "40", "41", "42", "43"],
     description:
-      "Ein entspannter Slip-on fuer ruhige Innenraeume, kurze Wege und Tage, an denen Komfort selbstverstaendlich sein soll.",
+      "Ein entspannter Slip-on für ruhige Innenraeume, kurze Wege und Tage, an denen Komfort selbstverstaendlich sein soll.",
   },
   {
     id: 5,
@@ -69,12 +69,12 @@ const PRODUCTS = [
     color: "Ocean Blue",
     material: "Breathable upper",
     category: "tech",
-    image: "/wai3-opt.jpeg",
-    hoverImage: "/wai12-opt.jpeg",
+    image: "/wai2_front.jpeg",
+    hoverImage: "/wai2_behind.jpeg",
     tag: null,
     sizes: ["37", "38", "39", "40", "41", "42", "43", "44", "45"],
     description:
-      "Minimal im Aufbau, weich im Auftritt und praezise dort, wo Halt gebraucht wird. Fuer Training, Reisen und Alltag mit mehr Bewegungsfreiheit.",
+      "Minimal im Aufbau, weich im Auftritt und praezise dort, wo Halt gebraucht wird. für Training, Reisen und Alltag mit mehr Bewegungsfreiheit.",
   },
   {
     id: 6,
@@ -84,20 +84,20 @@ const PRODUCTS = [
     color: "Midnight",
     material: "Flexible sole",
     category: "travel",
-    image: "/wai8-opt.jpeg",
-    hoverImage: "/wai4-opt.jpeg",
+    image: "/wai1_front.jpeg",
+    hoverImage: "/wai1_behind.jpeg",
     tag: "New",
     sizes: ["38", "39", "40", "41", "42", "43", "44", "45"],
     description:
-      "Der vielseitige WAI Slip-on fuer Alltag und Wochenende. Clean genug fuer Reisen, weich genug fuer Zuhause, belastbar genug fuer draussen.",
+      "Der vielseitige WAI Slip-on für Alltag und Wochenende. Clean genug für Reisen, weich genug für Zuhause, belastbar genug für draussen.",
   },
 ];
 
 const FEATURES = [
-  ["01", "Barefoot feel", "Flexible Sohle und viel Raum fuer natuerliche Bewegung."],
-  ["02", "Packable", "Leicht, weich und flach verstaubar fuer Reisen."],
+  ["01", "Barefoot feel", "Flexible Sohle und viel Raum für natuerliche Bewegung."],
+  ["02", "Packable", "Leicht, weich und flach verstaubar für Reisen."],
   ["03", "Clean design", "Reduzierte Linien, textile Struktur, kein lauter Sportschuh."],
-  ["04", "Easy care", "Gemacht fuer Alltag, kurze Wege und unkomplizierte Routinen."],
+  ["04", "Easy care", "Gemacht für1 Alltag, kurze Wege und unkomplizierte Routinen."],
 ];
 
 const CSS = `
@@ -213,7 +213,7 @@ button { color: inherit; }
 
 .hero {
   position: relative;
-  min-height: 88svh;
+  min-height: 100svh;
   display: grid;
   align-items: end;
   padding: 128px 44px 48px;
@@ -316,36 +316,25 @@ button { color: inherit; }
   animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
 }
 
-.feature-strip {
+.story-features {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border-bottom: 1px solid var(--line);
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 32px;
+  margin-top: 36px;
+  padding-top: 30px;
   border-top: 1px solid var(--line);
-  background: var(--bg);
 }
 
-.feature {
-  min-height: 132px;
-  padding: 26px 28px;
-  border-right: 1px solid var(--line);
-}
-.feature:last-child { border-right: 0; }
-.feature-number {
+.story-feature strong {
   display: block;
-  margin-bottom: 18px;
-  color: var(--clay);
-  font-size: 12px;
-}
-.feature strong {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 14px;
+  margin-bottom: 5px;
+  font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   font-weight: 500;
 }
-.feature span:last-child {
-  display: block;
+
+.story-feature span {
   color: var(--muted);
   font-size: 13px;
   line-height: 1.55;
@@ -412,7 +401,7 @@ button { color: inherit; }
 .shop-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 22px;
+  gap: 32px;
 }
 
 .product-card {
@@ -422,7 +411,7 @@ button { color: inherit; }
   border: 1px solid var(--line);
   border-radius: 8px;
   overflow: hidden;
-  min-height: 510px;
+  min-height: 520px;
   cursor: pointer;
   text-align: left;
   animation: fadeUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -430,7 +419,7 @@ button { color: inherit; }
 
 .product-media {
   position: relative;
-  height: 360px;
+  height: 440px;
   overflow: hidden;
   background: var(--sand);
 }
@@ -1018,7 +1007,6 @@ export default function App() {
       ) : (
         <main>
           <Hero />
-          <FeatureStrip />
           <Shop
             products={filteredProducts}
             filter={filter}
@@ -1076,7 +1064,7 @@ function Hero() {
           <h1>Natural freedom, refined.</h1>
           <p className="hero-text">
             WAI verbindet den Komfort eines Hausschuhs mit der Ruhe eines reduzierten Loafers:
-            leicht, flexibel und gemacht fuer Wege drinnen, draussen und unterwegs.
+            leicht, flexibel und gemacht für Wege drinnen, draussen und unterwegs.
           </p>
           <div className="hero-actions">
             <a className="primary-btn" href="#shop">Shop Collection</a>
@@ -1091,19 +1079,6 @@ function Hero() {
   );
 }
 
-function FeatureStrip() {
-  return (
-    <section className="feature-strip" aria-label="WAI Vorteile">
-      {FEATURES.map(([number, title, text]) => (
-        <div className="feature" key={number}>
-          <span className="feature-number">{number}</span>
-          <strong>{title}</strong>
-          <span>{text}</span>
-        </div>
-      ))}
-    </section>
-  );
-}
 
 function Shop({ products, filter, setFilter, onOpen, onQuickAdd }) {
   const filters = [
@@ -1200,6 +1175,14 @@ function Story() {
             klare Shopkarten und kurze Texte lassen die Bilder arbeiten.
           </p>
           <a className="story-link" href="#shop">Zur Kollektion</a>
+          <div className="story-features">
+            {FEATURES.map(([, title, text]) => (
+              <div className="story-feature" key={title}>
+                <strong>{title}</strong>
+                <span>{text}</span>
+              </div>
+            ))}
+          </div>
         </div>
         <div className="story-images">
           <figure className="story-image large">
@@ -1222,7 +1205,7 @@ function MovementBanner() {
         <p className="eyebrow">Home, airport, weekend</p>
         <h2>One pair for the in-between.</h2>
         <p>
-          Fuer Orte, an denen normale Schuhe zu hart und Hausschuhe zu wenig sind.
+          Für Orte, an denen normale Schuhe zu hart und Hausschuhe zu wenig sind.
           Leicht am Fuss, ruhig im Look, schnell im Gepaeck.
         </p>
       </div>
@@ -1318,7 +1301,7 @@ function Footer() {
       <div className="footer-inner">
         <div>
           <p className="footer-brand">WAI</p>
-          <p>Feel Shoes fuer natuerliche Bewegung. Ruhig im Design, leicht am Fuss.</p>
+          <p>Feel Shoes für natuerliche Bewegung. Ruhig im Design, leicht am Fuss.</p>
         </div>
         <div className="footer-links">
           <a href="#shop">Shop</a>
