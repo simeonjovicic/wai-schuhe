@@ -889,8 +889,6 @@ button { color: inherit; }
   .hero-content { grid-template-columns: 1fr; }
   .hero h1 { font-size: 58px; max-width: 430px; }
   .hero-proof { justify-self: start; width: 100%; max-width: 430px; }
-  .feature-strip { grid-template-columns: repeat(2, 1fr); }
-  .feature:nth-child(2) { border-right: 0; }
   .section { padding: 68px 20px; }
   .section-head { grid-template-columns: 1fr; }
   .section h2 { font-size: 44px; }
@@ -918,8 +916,6 @@ button { color: inherit; }
   .hero-text { font-size: 15px; }
   .hero-actions { align-items: stretch; }
   .primary-btn, .secondary-btn { width: 100%; }
-  .feature-strip { grid-template-columns: 1fr; }
-  .feature { border-right: 0; }
   .shop-grid { grid-template-columns: 1fr; }
   .product-card { min-height: auto; }
   .product-media { height: 330px; }
