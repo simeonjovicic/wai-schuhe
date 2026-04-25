@@ -1,4 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+
+const FRAME_COUNT = 165;
+const FRAMES = Array.from({ length: FRAME_COUNT }, (_, i) =>
+  `/frames/ezgif-frame-${String(i + 1).padStart(3, "0")}.jpg`,
+);
 
 const PRODUCTS = [
   {
@@ -104,6 +109,7 @@ const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
 
 :root {
+  --nav-h: 78px;
   --bg: #f7f3ed;
   --paper: #fffaf2;
   --text: #1c1917;
@@ -137,7 +143,7 @@ button { color: inherit; }
   color: var(--text);
   font-family: "DM Sans", system-ui, sans-serif;
   font-weight: 300;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .serif { font-family: "Cormorant Garamond", Georgia, serif; }
@@ -613,6 +619,459 @@ button { color: inherit; }
   line-height: 1.75;
 }
 
+.scroll-anim {
+  position: relative;
+  height: 600vh;
+  margin-top: var(--nav-h);
+}
+
+.scroll-anim-sticky {
+  position: sticky;
+  top: var(--nav-h);
+  height: calc(100vh - var(--nav-h));
+  overflow: hidden;
+  background: #fff;
+}
+
+.scroll-anim-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.scroll-anim-label {
+  position: absolute;
+  bottom: 52px;
+  left: 44px;
+  z-index: 2;
+  color: var(--text);
+  pointer-events: none;
+}
+
+.scroll-anim-label p {
+  margin: 0 0 8px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+}
+
+.scroll-anim-label h2 {
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 52px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.scroll-anim-info {
+  position: absolute;
+  top: 36px;
+  left: 44px;
+  z-index: 2;
+  color: var(--text);
+  pointer-events: none;
+}
+
+.scroll-anim-info .eyebrow {
+  margin: 0 0 12px;
+  opacity: 0.55;
+}
+
+.scroll-anim-info h3 {
+  margin: 0 0 18px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 58px;
+  font-weight: 300;
+  line-height: 1.0;
+  max-width: 440px;
+}
+
+.scroll-anim-info p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.75;
+  max-width: 320px;
+  color: var(--muted);
+}
+
+.info {
+  background: #fff;
+  color: var(--text);
+}
+
+.info-marquee {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 22px 44px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--muted);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.info-marquee span { opacity: 0.55; }
+.info-marquee strong {
+  color: var(--text);
+  font-weight: 400;
+  letter-spacing: 0.18em;
+}
+.info-marquee .dot {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--clay);
+  flex-shrink: 0;
+}
+
+.info-intro {
+  position: relative;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 140px 44px 110px;
+  display: grid;
+  grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr);
+  gap: 80px;
+  align-items: end;
+  border-bottom: 1px solid var(--line);
+}
+
+.info-intro::before {
+  content: "Vol. 01";
+  position: absolute;
+  top: 80px;
+  right: 44px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+.info-intro .eyebrow {
+  margin: 0 0 22px;
+  color: var(--clay);
+  opacity: 1;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+}
+
+.info-intro h2 {
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 92px;
+  line-height: 0.94;
+  font-weight: 300;
+  letter-spacing: -0.015em;
+}
+
+.info-intro h2 em {
+  font-style: italic;
+  font-weight: 300;
+}
+
+.info-intro p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.85;
+  max-width: 460px;
+}
+
+.info-blocks {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 44px;
+}
+
+.info-block {
+  display: grid;
+  grid-template-columns: minmax(0, 0.55fr) minmax(0, 0.45fr);
+  gap: 90px;
+  padding: 140px 0;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+}
+
+.info-block.reverse .info-block-plate { order: 2; }
+.info-block.reverse .info-block-copy { order: 1; }
+
+.info-block-plate {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-block-plate.tone-sand { background: var(--sand); color: var(--text); }
+.info-block-plate.tone-navy { background: var(--navy); color: var(--paper); }
+.info-block-plate.tone-clay { background: var(--clay); color: #1c1917; }
+
+.info-block-numeral {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-style: italic;
+  font-size: 320px;
+  line-height: 0.85;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  opacity: 0.92;
+}
+
+.info-block-plate-meta {
+  position: absolute;
+  top: 28px;
+  left: 28px;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.info-block-plate-mark {
+  position: absolute;
+  bottom: 28px;
+  right: 28px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-style: italic;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.info-block-plate-arc {
+  position: absolute;
+  bottom: -45%;
+  left: -10%;
+  width: 120%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+.info-block-copy {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-block-copy .info-marker {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 26px;
+  color: var(--clay);
+}
+
+.info-block-copy .info-marker-num {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 22px;
+  letter-spacing: 0.06em;
+}
+
+.info-block-copy .info-marker-line {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.info-block-copy .info-marker-tag {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--muted);
+}
+
+.info-block-copy h3 {
+  margin: 0 0 28px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 60px;
+  font-weight: 300;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  max-width: 480px;
+}
+
+.info-block-copy > p {
+  margin: 0 0 40px;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.88;
+  max-width: 460px;
+}
+
+.info-quote {
+  margin: 0 0 44px;
+  padding: 4px 0 4px 24px;
+  border-left: 1px solid var(--text);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-style: italic;
+  font-size: 24px;
+  line-height: 1.4;
+  color: var(--text);
+  max-width: 460px;
+}
+
+.info-specs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--text);
+  max-width: 500px;
+}
+
+.info-spec {
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding-right: 24px;
+}
+
+.info-spec:nth-child(odd) {
+  border-right: 1px solid var(--line);
+  padding-left: 0;
+}
+.info-spec:nth-child(even) {
+  padding-left: 24px;
+  padding-right: 0;
+}
+
+.info-spec span {
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+.info-spec strong {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-align: right;
+}
+
+.info-manifesto {
+  position: relative;
+  background: var(--bg);
+  padding: 180px 44px 170px;
+  text-align: center;
+  border-top: 1px solid var(--line);
+}
+
+.info-manifesto::before,
+.info-manifesto::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 1px;
+  height: 60px;
+  background: var(--line-strong);
+}
+.info-manifesto::before { top: 60px; }
+.info-manifesto::after { bottom: 60px; }
+
+.info-manifesto-inner {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.info-manifesto .eyebrow {
+  margin: 0 0 42px;
+  color: var(--clay);
+  opacity: 1;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+}
+
+.info-manifesto blockquote {
+  margin: 0 0 50px;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 56px;
+  line-height: 1.15;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.info-manifesto blockquote em {
+  font-style: italic;
+}
+
+.info-manifesto cite {
+  font-style: normal;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--muted);
+}
+
+.info-cta {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 48px;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 70px 44px;
+  border-top: 1px solid var(--line);
+}
+
+.info-cta-eyebrow {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--muted);
+  margin: 0;
+}
+
+.info-cta-text {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 44px;
+  line-height: 1;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-align: center;
+}
+
+.info-cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 36px;
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--paper);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 11px;
+  transition: background 0.3s ease, gap 0.3s ease;
+}
+
+.info-cta-link:hover {
+  background: var(--navy);
+  gap: 18px;
+}
+
+.info-cta-link::after {
+  content: "→";
+  font-size: 14px;
+  letter-spacing: 0;
+}
+
 .footer {
   padding: 58px 44px 38px;
   border-top: 1px solid var(--line);
@@ -898,6 +1357,37 @@ button { color: inherit; }
   .story-copy { max-width: 650px; }
   .banner { padding: 28px 20px; min-height: 430px; }
   .banner h2 { font-size: 44px; }
+  .info-marquee { padding: 18px 22px; gap: 20px; font-size: 10px; }
+  .info-intro {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 80px 22px 60px;
+  }
+  .info-intro::before { top: 32px; right: 22px; font-size: 12px; }
+  .info-intro h2 { font-size: 56px; }
+  .info-blocks { padding: 0 22px; }
+  .info-block {
+    grid-template-columns: 1fr;
+    gap: 48px;
+    padding: 80px 0;
+  }
+  .info-block.reverse .info-block-plate { order: 0; }
+  .info-block.reverse .info-block-copy { order: 0; }
+  .info-block-numeral { font-size: 200px; }
+  .info-block-copy h3 { font-size: 40px; }
+  .info-manifesto { padding: 110px 22px 100px; }
+  .info-manifesto::before, .info-manifesto::after { display: none; }
+  .info-manifesto blockquote { font-size: 32px; }
+  .info-cta {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 48px 22px;
+    text-align: center;
+  }
+  .info-cta-text { font-size: 30px; }
+  .info-cta-link { justify-self: center; }
+  .scroll-anim-label { left: 20px; bottom: 32px; }
+  .scroll-anim-label h2 { font-size: 36px; }
   .footer-inner { grid-template-columns: 1fr; }
   .detail-grid { grid-template-columns: 1fr; }
   .detail-media img { min-height: 420px; }
@@ -1013,8 +1503,8 @@ export default function App() {
               addToBag(productId, quickProduct.sizes[Math.floor(quickProduct.sizes.length / 2)]);
             }}
           />
-          <Story />
-          <MovementBanner />
+          <ScrollAnimation />
+          <InfoSections />
         </main>
       )}
 
@@ -1155,55 +1645,230 @@ function Shop({ products, filter, setFilter, onOpen, onQuickAdd }) {
   );
 }
 
-function Story() {
+function ScrollAnimation() {
+  const containerRef = useRef(null);
+  const canvasRef = useRef(null);
+  const rafRef = useRef(null);
+  const imagesRef = useRef([]);
+  const lastFrame = useRef(-1);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+
+    function sizeCanvas() {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+    sizeCanvas();
+    window.addEventListener("resize", sizeCanvas);
+
+    function drawCover(img) {
+      const cw = canvas.width;
+      const ch = canvas.height;
+      const iw = img.naturalWidth;
+      const ih = img.naturalHeight;
+      const scale = Math.max(cw / iw, ch / ih);
+      const dw = iw * scale;
+      const dh = ih * scale;
+      const dx = (cw - dw) / 2;
+      const dy = (ch - dh) / 2;
+      ctx.drawImage(img, dx, dy, dw, dh);
+    }
+
+    function getIdx() {
+      if (!containerRef.current) return 0;
+      const rect = containerRef.current.getBoundingClientRect();
+      const scrolled = -rect.top;
+      const total = rect.height - window.innerHeight;
+      const progress = Math.max(0, Math.min(1, scrolled / total));
+      return Math.round(progress * (FRAME_COUNT - 1));
+    }
+
+    function renderFrame(idx) {
+      const img = imagesRef.current[idx];
+      if (!img?.complete || lastFrame.current === idx) return;
+      lastFrame.current = idx;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawCover(img);
+    }
+
+    function update() {
+      renderFrame(getIdx());
+    }
+
+    function onScroll() {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(update);
+    }
+
+    // Load all frames; draw frame 0 as soon as it's ready
+    imagesRef.current = FRAMES.map((src, i) => {
+      const img = new Image();
+      img.onload = () => {
+        if (i === 0) renderFrame(0);
+        else renderFrame(getIdx());
+      };
+      img.src = src;
+      return img;
+    });
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", update);
+      window.removeEventListener("resize", sizeCanvas);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
   return (
-    <section className="section story" id="story">
-      <div className="section-inner story-layout">
-        <div className="story-copy">
-          <p className="eyebrow">Designed with restraint</p>
-          <h2>Less shoe. More feel.</h2>
-          <p>
-            Die Website spricht jetzt staerker ueber das, was man am Produkt sieht:
-            textile Oberflaechen, flexible Sohlen und eine Formsprache, die nicht nach Performance-Sneaker aussieht.
-          </p>
-          <p>
-            WAI bleibt visuell warm und hochwertig, aber die Komposition ist direkter. Grosse Motive,
-            klare Shopkarten und kurze Texte lassen die Bilder arbeiten.
-          </p>
-          <a className="story-link" href="#shop">Zur Kollektion</a>
-          <div className="story-features">
-            {FEATURES.map(([, title, text]) => (
-              <div className="story-feature" key={title}>
-                <strong>{title}</strong>
-                <span>{text}</span>
-              </div>
-            ))}
-          </div>
+    <div ref={containerRef} className="scroll-anim" id="story">
+      <div className="scroll-anim-sticky">
+        <canvas ref={canvasRef} className="scroll-anim-canvas" />
+        <div className="scroll-anim-info">
+          <p className="eyebrow">WAI Feel Shoe</p>
+          <h3>Built for natural movement.</h3>
+          <p>Flexible Sohle, textile Struktur und ein Gewicht, das man kaum spuert.</p>
         </div>
-        <div className="story-images">
-          <figure className="story-image large">
-            <img src="/wai5-opt.jpeg" alt="WAI Schuhe mit flexibler Sohle auf Holz" />
-          </figure>
-          <figure className="story-image small">
-            <img src="/wai6-opt.jpeg" alt="WAI Produktdetails mit rollbarer Sohle" />
-          </figure>
+        <div className="scroll-anim-label">
+          <p>IVIVI Barefoot Technology</p>
+          <h2>Engineered<br />for motion.</h2>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
 
-function MovementBanner() {
+const INFO_BLOCKS = [
+  {
+    num: "01",
+    tone: "tone-sand",
+    plateMeta: "Plate I",
+    plateMark: "Sole",
+    eyebrow: "Foundation",
+    tag: "Barefoot Flex",
+    heading: "A sole that thinks with the foot.",
+    body: "Our IVIVI Barefoot system rolls with each step instead of dictating it — hand-measured in Florence, direct-injected in a single piece. The result feels closer to skin than to footwear.",
+    quote: "“A shoe is only good when you forget you’re wearing it.”",
+    specs: [
+      ["Sole", "IVIVI Barefoot Flex"],
+      ["Drop", "0 mm"],
+      ["Weight", "from 180 g"],
+      ["Build", "Direct injection"],
+    ],
+  },
+  {
+    num: "02",
+    tone: "tone-navy",
+    plateMeta: "Plate II",
+    plateMark: "Form",
+    eyebrow: "Construction",
+    tag: "Packable",
+    heading: "Folded down. Ready anywhere.",
+    body: "Seamless construction, soft-set materials and a footprint that collapses flat — engineered for the carry-on, the studio, the long weekend. Light enough to forget, structured enough to trust.",
+    quote: "“Travel means becoming lighter — even in your shoes.”",
+    specs: [
+      ["Format", "Folds flat"],
+      ["Stitch", "Seamless"],
+      ["Care", "Hand wash, 30°"],
+      ["Packaging", "100% recycled"],
+    ],
+  },
+  {
+    num: "03",
+    tone: "tone-clay",
+    plateMeta: "Plate III",
+    plateMark: "Silhouette",
+    eyebrow: "Restraint",
+    tag: "Quiet design",
+    heading: "Less shoe. More stance.",
+    body: "Reduced lines, textile surfaces, no loud logos. A silhouette that holds its own in any room — and on any street. Built in Italy, designed to disappear into the rest of what you wear.",
+    quote: "“Elegance begins where volume ends.”",
+    specs: [
+      ["Design", "Minimal slip-on"],
+      ["Palette", "Earth tones"],
+      ["Textile", "Italian woven"],
+      ["Origin", "Made in Italy"],
+    ],
+  },
+];
+
+function InfoSections() {
   return (
-    <section className="banner" id="movement">
-      <img src="/wai7-opt.jpeg" alt="WAI Schuhe beim Reisen" />
-      <div className="banner-content">
-        <p className="eyebrow">Home, airport, weekend</p>
-        <h2>One pair for the in-between.</h2>
+    <section className="info" id="movement">
+      <div className="info-marquee">
+        <strong>The WAI Index</strong>
+        <span className="dot" />
+        <span>Sole</span>
+        <span className="dot" />
+        <span>Form</span>
+        <span className="dot" />
+        <span>Silhouette</span>
+        <span className="dot" />
+        <span>Manifesto</span>
+        <span className="dot" />
+        <strong>Vol. 01 — 2026</strong>
+      </div>
+
+      <div className="info-intro">
+        <div>
+          <p className="eyebrow">The WAI Principles</p>
+          <h2>Three quiet ideas, <em>built into every pair.</em></h2>
+        </div>
         <p>
-          Für Orte, an denen normale Schuhe zu hart und Hausschuhe zu wenig sind.
-          Leicht am Fuss, ruhig im Look, schnell im Gepaeck.
+          We don’t design sneakers. We design feel-shoes — a category that begins with the foot,
+          ends with the silhouette, and passes through everything in between. What follows is the index.
         </p>
+      </div>
+
+      <div className="info-blocks">
+        {INFO_BLOCKS.map((block, i) => (
+          <article className={`info-block${i % 2 === 1 ? " reverse" : ""}`} key={block.num}>
+            <div className={`info-block-plate ${block.tone}`}>
+              <span className="info-block-plate-meta">{block.plateMeta}</span>
+              <span className="info-block-numeral">{block.num}</span>
+              <span className="info-block-plate-mark">— {block.plateMark}</span>
+              <span className="info-block-plate-arc" />
+            </div>
+            <div className="info-block-copy">
+              <div className="info-marker">
+                <span className="info-marker-num">{block.num}</span>
+                <span className="info-marker-line" />
+                <span className="info-marker-tag">{block.tag}</span>
+              </div>
+              <h3>{block.heading}</h3>
+              <p>{block.body}</p>
+              <blockquote className="info-quote">{block.quote}</blockquote>
+              <div className="info-specs">
+                {block.specs.map(([label, value]) => (
+                  <div className="info-spec" key={label}>
+                    <span>{label}</span>
+                    <strong>{value}</strong>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div className="info-manifesto">
+        <div className="info-manifesto-inner">
+          <p className="eyebrow">Manifesto</p>
+          <blockquote>
+            “We build shoes that feel like they were already there — <em>quiet, light,</em>
+            and exactly as much shoe as the day requires.”
+          </blockquote>
+          <cite>— WAI Studio, Florence</cite>
+        </div>
+      </div>
+
+      <div className="info-cta">
+        <p className="info-cta-eyebrow">Vol. 01 / The Index</p>
+        <p className="info-cta-text">Ready to wear less?</p>
+        <a className="info-cta-link" href="#shop">Discover the collection</a>
       </div>
     </section>
   );
