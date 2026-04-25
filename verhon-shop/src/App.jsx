@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 const FRAME_COUNT = 165;
@@ -19,7 +20,7 @@ const PRODUCTS = [
     tag: "Signature",
     sizes: ["36", "37", "38", "39", "40", "41", "42", "43", "44", "45"],
     description:
-      "Ein leichter Feel Shoe für Zuhause, den Morgen, das Studio und alle Momente dazwischen. Flexibel, atmungsaktiv und so reduziert konstruiert, dass sich der Schuh kaum in den Vordergrund drueckt.",
+      "Ein leichter Feel Shoe für Zuhause, den Morgen, das Studio und alle Momente dazwischen. Flexibel, atmungsaktiv und so reduziert konstruiert, dass sich der Schuh kaum in den Vordergrund drückt.",
   },
   {
     id: 2,
@@ -34,7 +35,7 @@ const PRODUCTS = [
     tag: "Travel",
     sizes: ["38", "39", "40", "41", "42", "43", "44", "45"],
     description:
-      "Gemacht für Wege, Wartezeiten und leichte Routinen unterwegs. Die flexible Konstruktion laesst sich flach verstauen und bleibt trotzdem stabil genug für den ganzen Tag.",
+      "Gemacht für Wege, Wartezeiten und leichte Routinen unterwegs. Die flexible Konstruktion lässt sich flach verstauen und bleibt trotzdem stabil genug für den ganzen Tag.",
   },
   {
     id: 3,
@@ -49,7 +50,7 @@ const PRODUCTS = [
     tag: "Flexible",
     sizes: ["37", "38", "39", "40", "41", "42", "43", "44"],
     description:
-      "Die weiche, rollbare Sohle gibt dem Fuss Raum, ohne den Look eines klassischen Slippers zu verlieren. Ein ruhiger Schuh mit technischer Substanz.",
+      "Die weiche, rollbare Sohle gibt dem Fuß Raum, ohne den Look eines klassischen Slippers zu verlieren. Ein ruhiger Schuh mit technischer Substanz.",
   },
   {
     id: 4,
@@ -64,7 +65,7 @@ const PRODUCTS = [
     tag: null,
     sizes: ["36", "37", "38", "39", "40", "41", "42", "43"],
     description:
-      "Ein entspannter Slip-on für ruhige Innenraeume, kurze Wege und Tage, an denen Komfort selbstverstaendlich sein soll.",
+      "Ein entspannter Slip-on für ruhige Innenräume, kurze Wege und Tage, an denen Komfort selbstverständlich sein soll.",
   },
   {
     id: 5,
@@ -79,7 +80,7 @@ const PRODUCTS = [
     tag: null,
     sizes: ["37", "38", "39", "40", "41", "42", "43", "44", "45"],
     description:
-      "Minimal im Aufbau, weich im Auftritt und praezise dort, wo Halt gebraucht wird. für Training, Reisen und Alltag mit mehr Bewegungsfreiheit.",
+      "Minimal im Aufbau, weich im Auftritt und präzise dort, wo Halt gebraucht wird. Für Training, Reisen und Alltag mit mehr Bewegungsfreiheit.",
   },
   {
     id: 6,
@@ -94,16 +95,37 @@ const PRODUCTS = [
     tag: "New",
     sizes: ["38", "39", "40", "41", "42", "43", "44", "45"],
     description:
-      "Der vielseitige WAI Slip-on für Alltag und Wochenende. Clean genug für Reisen, weich genug für Zuhause, belastbar genug für draussen.",
+      "Der vielseitige WAI Slip-on für Alltag und Wochenende. Clean genug für Reisen, weich genug für Zuhause, belastbar genug für draußen.",
   },
 ];
 
 const FEATURES = [
-  ["01", "Barefoot feel", "Flexible Sohle und viel Raum für natuerliche Bewegung."],
+  ["01", "Barefoot feel", "Flexible Sohle und viel Raum für natürliche Bewegung."],
   ["02", "Packable", "Leicht, weich und flach verstaubar für Reisen."],
   ["03", "Clean design", "Reduzierte Linien, textile Struktur, kein lauter Sportschuh."],
-  ["04", "Easy care", "Gemacht für1 Alltag, kurze Wege und unkomplizierte Routinen."],
+  ["04", "Easy care", "Gemacht für Alltag, kurze Wege und unkomplizierte Routinen."],
 ];
+
+const DETAIL_TRANSITION = {
+  duration: 0.58,
+  ease: [0.22, 1, 0.36, 1],
+};
+
+const DETAIL_VARIANTS = {
+  initial: {
+    x: "100%",
+  },
+  animate: {
+    x: 0,
+    transition: DETAIL_TRANSITION,
+  },
+  exit: {
+    x: "100%",
+    transition: { duration: 0.46, ease: [0.64, 0, 0.78, 0] },
+  },
+};
+
+const MotionDiv = motion.div;
 
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
@@ -122,7 +144,10 @@ const CSS = `
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--nav-h);
+}
 body { margin: 0; background: var(--bg); }
 button, a { font: inherit; }
 button { color: inherit; }
@@ -147,6 +172,15 @@ button { color: inherit; }
 }
 
 .serif { font-family: "Cormorant Garamond", Georgia, serif; }
+
+.product-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  background: var(--bg);
+  overflow: hidden;
+  will-change: transform, opacity;
+}
 
 .nav {
   position: fixed;
@@ -731,23 +765,30 @@ button { color: inherit; }
   flex-shrink: 0;
 }
 
-.info-intro {
-  position: relative;
+.info-story {
   max-width: 1360px;
   margin: 0 auto;
-  padding: 140px 44px 110px;
+  padding: 120px 44px 40px;
   display: grid;
-  grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr);
-  gap: 80px;
-  align-items: end;
+  grid-template-columns: minmax(320px, 0.38fr) minmax(0, 0.62fr);
+  gap: 72px;
   border-bottom: 1px solid var(--line);
 }
 
-.info-intro::before {
+.info-story-sticky {
+  position: sticky;
+  top: calc(var(--nav-h) + 34px);
+  min-height: calc(100svh - var(--nav-h) - 68px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-self: start;
+}
+
+.info-story-sticky::before {
   content: "Vol. 01";
-  position: absolute;
-  top: 80px;
-  right: 44px;
+  display: block;
+  margin-bottom: 56px;
   font-family: "Cormorant Garamond", Georgia, serif;
   font-style: italic;
   font-size: 14px;
@@ -755,7 +796,7 @@ button { color: inherit; }
   letter-spacing: 0.04em;
 }
 
-.info-intro .eyebrow {
+.info-story .eyebrow {
   margin: 0 0 22px;
   color: var(--clay);
   opacity: 1;
@@ -763,21 +804,21 @@ button { color: inherit; }
   letter-spacing: 0.22em;
 }
 
-.info-intro h2 {
-  margin: 0;
+.info-story h2 {
+  margin: 0 0 clamp(22px, 3vh, 34px);
   font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 92px;
+  font-size: clamp(54px, 5.45vw, 86px);
   line-height: 0.94;
   font-weight: 300;
   letter-spacing: -0.015em;
 }
 
-.info-intro h2 em {
+.info-story h2 em {
   font-style: italic;
   font-weight: 300;
 }
 
-.info-intro p {
+.info-story-copy {
   margin: 0;
   color: var(--muted);
   font-size: 17px;
@@ -785,27 +826,68 @@ button { color: inherit; }
   max-width: 460px;
 }
 
-.info-blocks {
-  max-width: 1360px;
-  margin: 0 auto;
-  padding: 0 44px;
+.info-progress {
+  display: grid;
+  gap: 10px;
+  margin-top: clamp(26px, 4vh, 42px);
 }
 
-.info-block {
+.info-progress-item {
   display: grid;
-  grid-template-columns: minmax(0, 0.55fr) minmax(0, 0.45fr);
-  gap: 90px;
-  padding: 140px 0;
+  grid-template-columns: 42px 44px 1fr;
+  align-items: center;
+  gap: 14px;
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  transition: color 0.25s ease, opacity 0.25s ease;
+  opacity: 0.52;
+}
+
+.info-progress-item::before {
+  content: "";
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.35;
+}
+
+.info-progress-item.is-active {
+  color: var(--text);
+  opacity: 1;
+}
+
+.info-progress-num {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 20px;
+  letter-spacing: 0.04em;
+}
+
+.info-steps {
+  position: relative;
+}
+
+.info-step {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.46fr) minmax(0, 0.54fr);
+  gap: 46px;
+  min-height: calc(100svh - var(--nav-h));
+  padding: 44px 0;
   align-items: center;
   border-bottom: 1px solid var(--line);
+  scroll-margin-top: calc(var(--nav-h) + 34px);
 }
 
-.info-block.reverse .info-block-plate { order: 2; }
-.info-block.reverse .info-block-copy { order: 1; }
+.info-step:last-child {
+  border-bottom: 0;
+}
 
 .info-block-plate {
   position: relative;
   aspect-ratio: 4 / 5;
+  max-height: 620px;
+  padding: 0 13%;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -817,13 +899,26 @@ button { color: inherit; }
 .info-block-plate.tone-clay { background: var(--clay); color: #1c1917; }
 
 .info-block-numeral {
+  display: block;
   font-family: "Cormorant Garamond", Georgia, serif;
   font-style: italic;
-  font-size: 320px;
-  line-height: 0.85;
+  font-size: clamp(205px, 15.5vw, 270px);
+  line-height: 1;
   font-weight: 300;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
+  opacity: 0;
+  clip-path: inset(-20% 120% -20% -24%);
+  transform: translateX(-18px);
+  transition:
+    clip-path 1.05s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.45s ease,
+    transform 1.05s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.info-step.is-active .info-block-numeral {
   opacity: 0.92;
+  clip-path: inset(-20% -30% -20% -24%);
+  transform: translateX(0);
 }
 
 .info-block-plate-meta {
@@ -1224,63 +1319,93 @@ button { color: inherit; }
 }
 
 .detail {
-  min-height: 100vh;
-  padding-top: 86px;
+  height: 100svh;
+  padding: calc(var(--nav-h) + 18px) 44px 28px;
+  overflow: hidden;
 }
 
 .detail-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(390px, 0.9fr);
-  min-height: calc(100vh - 86px);
+  grid-template-columns: minmax(0, 1.08fr) minmax(390px, 0.92fr);
+  gap: 48px;
+  height: 100%;
+  max-width: 1680px;
+  margin: 0 auto;
+  align-items: stretch;
 }
 
 .detail-media {
   position: relative;
-  background: var(--sand);
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: linear-gradient(180deg, #eee7dc 0%, #d8cdc0 100%);
   overflow: hidden;
+  box-shadow: 0 24px 70px rgba(28, 25, 23, 0.08);
 }
 .detail-media img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  min-height: 620px;
   object-fit: cover;
+  object-position: center center;
 }
+
 .detail-panel {
-  padding: 72px 58px;
+  min-height: 0;
+  padding: 22px 18px 18px 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  overflow-y: auto;
+  scrollbar-width: none;
 }
+.detail-panel::-webkit-scrollbar { display: none; }
 .back {
   display: inline-flex;
+  align-items: center;
+  gap: 10px;
   width: fit-content;
-  margin-bottom: 34px;
-  border: 0;
-  background: transparent;
-  color: var(--muted);
+  min-height: 42px;
+  padding: 0 18px;
+  margin-bottom: clamp(16px, 3vh, 30px);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: rgba(255, 250, 242, 0.48);
+  color: var(--text);
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 12px;
   cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.back:hover {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--paper);
+  transform: translateX(-2px);
 }
 .detail-panel h1 {
   margin: 0 0 8px;
   font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 68px;
+  font-size: clamp(48px, 4.6vw, 72px);
   line-height: 0.98;
   font-weight: 300;
 }
 .detail-sub {
-  margin: 0 0 26px;
+  margin: 0 0 clamp(18px, 2.6vh, 26px);
   color: var(--muted);
 }
 .detail-price {
-  margin-bottom: 34px;
+  margin-bottom: clamp(22px, 3.2vh, 34px);
   font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 38px;
+  font-size: clamp(34px, 3vw, 42px);
 }
 .size-label {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.13em;
@@ -1290,11 +1415,11 @@ button { color: inherit; }
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  margin-bottom: 30px;
+  margin-bottom: clamp(20px, 2.8vh, 30px);
 }
 .size {
-  width: 46px;
-  height: 46px;
+  width: 44px;
+  height: 44px;
   border: 1px solid var(--line);
   border-radius: 50%;
   background: transparent;
@@ -1321,11 +1446,12 @@ button { color: inherit; }
   cursor: not-allowed;
 }
 .detail-copy {
-  margin-top: 34px;
-  padding-top: 28px;
+  margin-top: clamp(18px, 3vh, 30px);
+  padding-top: clamp(16px, 2.4vh, 24px);
   border-top: 1px solid var(--line);
   color: var(--muted);
-  line-height: 1.82;
+  line-height: 1.65;
+  max-width: 560px;
 }
 
 @media (max-width: 980px) {
@@ -1358,21 +1484,37 @@ button { color: inherit; }
   .banner { padding: 28px 20px; min-height: 430px; }
   .banner h2 { font-size: 44px; }
   .info-marquee { padding: 18px 22px; gap: 20px; font-size: 10px; }
-  .info-intro {
+  .info-story {
     grid-template-columns: 1fr;
-    gap: 32px;
-    padding: 80px 22px 60px;
+    gap: 44px;
+    padding: 80px 22px 40px;
   }
-  .info-intro::before { top: 32px; right: 22px; font-size: 12px; }
-  .info-intro h2 { font-size: 56px; }
-  .info-blocks { padding: 0 22px; }
-  .info-block {
+  .info-story-sticky {
+    position: static;
+    min-height: auto;
+    gap: 34px;
+  }
+  .info-story-sticky::before {
+    margin-bottom: 26px;
+    font-size: 12px;
+  }
+  .info-story h2 { font-size: 56px; }
+  .info-progress {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 0;
+  }
+  .info-progress-item {
     grid-template-columns: 1fr;
-    gap: 48px;
-    padding: 80px 0;
+    gap: 8px;
   }
-  .info-block.reverse .info-block-plate { order: 0; }
-  .info-block.reverse .info-block-copy { order: 0; }
+  .info-progress-item::before { width: 100%; }
+  .info-step {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    min-height: auto;
+    padding: 64px 0;
+  }
   .info-block-numeral { font-size: 200px; }
   .info-block-copy h3 { font-size: 40px; }
   .info-manifesto { padding: 110px 22px 100px; }
@@ -1389,9 +1531,37 @@ button { color: inherit; }
   .scroll-anim-label { left: 20px; bottom: 32px; }
   .scroll-anim-label h2 { font-size: 36px; }
   .footer-inner { grid-template-columns: 1fr; }
-  .detail-grid { grid-template-columns: 1fr; }
-  .detail-media img { min-height: 420px; }
+  .detail {
+    height: auto;
+    min-height: 100svh;
+    padding: calc(var(--nav-h) + 16px) 20px 42px;
+    overflow: visible;
+  }
+  .detail-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    height: auto;
+  }
+  .detail-media { min-height: 420px; }
   .detail-panel { padding: 42px 24px 64px; }
+}
+
+@media (min-width: 981px) and (max-height: 760px) {
+  .detail { padding: calc(var(--nav-h) + 10px) 34px 18px; }
+  .detail-grid { gap: 34px; }
+  .detail-panel { padding-top: 8px; padding-bottom: 8px; }
+  .back { margin-bottom: 14px; }
+  .detail-panel h1 { font-size: 50px; }
+  .detail-sub { margin-bottom: 14px; }
+  .detail-price { margin-bottom: 18px; }
+  .sizes { margin-bottom: 18px; }
+  .size { width: 40px; height: 40px; }
+  .add-to-bag { min-height: 48px; }
+  .detail-copy {
+    margin-top: 18px;
+    padding-top: 14px;
+    line-height: 1.5;
+  }
 }
 
 @media (max-width: 640px) {
@@ -1431,10 +1601,6 @@ export default function App() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "instant" });
-  }, [activeProduct]);
-
   function openProduct(productId) {
     setSelectedSize("");
     setActiveProduct(productId);
@@ -1455,6 +1621,15 @@ export default function App() {
     const match = PRODUCTS.find((p) => p.id === item.productId);
     return sum + (match ? match.price * item.qty : 0);
   }, 0);
+
+  useEffect(() => {
+    if (!product) return undefined;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [product]);
 
   function addToBag(productId, size) {
     setBag((current) => {
@@ -1482,33 +1657,44 @@ export default function App() {
         onHome={closeProduct}
       />
 
-      {product ? (
-        <ProductDetail
-          product={product}
-          selectedSize={selectedSize}
-          setSelectedSize={setSelectedSize}
-          onBack={closeProduct}
-          onAdd={() => selectedSize && addToBag(product.id, selectedSize)}
+      <main>
+        <Hero />
+        <Shop
+          products={filteredProducts}
+          filter={filter}
+          setFilter={setFilter}
+          onOpen={openProduct}
+          onQuickAdd={(productId) => {
+            const quickProduct = PRODUCTS.find((item) => item.id === productId);
+            addToBag(productId, quickProduct.sizes[Math.floor(quickProduct.sizes.length / 2)]);
+          }}
         />
-      ) : (
-        <main>
-          <Hero />
-          <Shop
-            products={filteredProducts}
-            filter={filter}
-            setFilter={setFilter}
-            onOpen={openProduct}
-            onQuickAdd={(productId) => {
-              const quickProduct = PRODUCTS.find((item) => item.id === productId);
-              addToBag(productId, quickProduct.sizes[Math.floor(quickProduct.sizes.length / 2)]);
-            }}
-          />
-          <ScrollAnimation />
-          <InfoSections />
-        </main>
-      )}
+        <ScrollAnimation />
+        <InfoSections />
+        <Footer />
+      </main>
 
-      <Footer />
+      <AnimatePresence initial={false}>
+        {product && (
+          <MotionDiv
+            className="product-overlay"
+            key={product.id}
+            variants={DETAIL_VARIANTS}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+          >
+            <ProductDetail
+              product={product}
+              selectedSize={selectedSize}
+              setSelectedSize={setSelectedSize}
+              onBack={closeProduct}
+              onAdd={() => selectedSize && addToBag(product.id, selectedSize)}
+            />
+          </MotionDiv>
+        )}
+      </AnimatePresence>
+
       <BagDrawer
         bag={bag}
         open={bagOpen}
@@ -1550,7 +1736,7 @@ function Hero() {
           <h1>Natural freedom, refined.</h1>
           <p className="hero-text">
             WAI verbindet den Komfort eines Hausschuhs mit der Ruhe eines reduzierten Loafers:
-            leicht, flexibel und gemacht für Wege drinnen, draussen und unterwegs.
+            leicht, flexibel und gemacht für Wege drinnen, draußen und unterwegs.
           </p>
           <div className="hero-actions">
             <a className="primary-btn" href="#shop">Shop Collection</a>
@@ -1558,7 +1744,7 @@ function Hero() {
           </div>
         </div>
         <p className="hero-proof">
-          IVIVI Barefoot Technology, textile Struktur und eine flexible Sohle, die den Fuss arbeiten laesst.
+          IVIVI Barefoot Technology, textile Struktur und eine flexible Sohle, die den Fuß arbeiten lässt.
         </p>
       </div>
     </section>
@@ -1582,7 +1768,7 @@ function Shop({ products, filter, setFilter, onOpen, onQuickAdd }) {
             <p className="eyebrow">WAI Collection</p>
             <h2>Clean shapes. Real comfort.</h2>
             <p className="section-note">
-              Der Shop setzt die Produktbilder groesser, klarer und ruhiger ein. Kein lauter Katalog,
+              Der Shop setzt die Produktbilder größer, klarer und ruhiger ein. Kein lauter Katalog,
               sondern eine kompakte Auswahl mit Fokus auf Material, Bewegung und Alltag.
             </p>
           </div>
@@ -1730,7 +1916,7 @@ function ScrollAnimation() {
         <div className="scroll-anim-info">
           <p className="eyebrow">WAI Feel Shoe</p>
           <h3>Built for natural movement.</h3>
-          <p>Flexible Sohle, textile Struktur und ein Gewicht, das man kaum spuert.</p>
+          <p>Flexible Sohle, textile Struktur und ein Gewicht, das man kaum spürt.</p>
         </div>
         <div className="scroll-anim-label">
           <p>IVIVI Barefoot Technology</p>
@@ -1796,6 +1982,80 @@ const INFO_BLOCKS = [
 ];
 
 function InfoSections() {
+  const [activeInfoIndex, setActiveInfoIndex] = useState(0);
+  const activeInfoIndexRef = useRef(0);
+  const storyRef = useRef(null);
+  const snapLockRef = useRef(false);
+  const stepRefs = useRef([]);
+
+  useEffect(() => {
+    activeInfoIndexRef.current = activeInfoIndex;
+  }, [activeInfoIndex]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (visible?.target?.dataset.index) {
+          setActiveInfoIndex(Number(visible.target.dataset.index));
+        }
+      },
+      {
+        rootMargin: "-34% 0px -42% 0px",
+        threshold: [0.18, 0.32, 0.48, 0.64],
+      },
+    );
+
+    stepRefs.current.forEach((step) => {
+      if (step) observer.observe(step);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    function handleWheel(event) {
+      if (window.innerWidth <= 980 || snapLockRef.current || Math.abs(event.deltaY) < 24) return;
+
+      const story = storyRef.current;
+      if (!story) return;
+
+      const rect = story.getBoundingClientRect();
+      const storyIsActive = rect.top < window.innerHeight * 0.72 && rect.bottom > window.innerHeight * 0.28;
+      if (!storyIsActive) return;
+
+      const direction = event.deltaY > 0 ? 1 : -1;
+      const anchor = 112;
+      const stepPositions = stepRefs.current
+        .map((step, index) => (step ? { index, distance: Math.abs(step.getBoundingClientRect().top - anchor) } : null))
+        .filter(Boolean);
+      const nearest = stepPositions.sort((a, b) => a.distance - b.distance)[0];
+      const currentIndex = nearest?.index ?? activeInfoIndexRef.current;
+      const currentIsAligned = (nearest?.distance ?? 0) < 72;
+      const nextIndex = currentIsAligned ? currentIndex + direction : currentIndex;
+
+      if (nextIndex < 0 || nextIndex >= INFO_BLOCKS.length) return;
+
+      const nextStep = stepRefs.current[nextIndex];
+      if (!nextStep) return;
+
+      event.preventDefault();
+      snapLockRef.current = true;
+      const top = nextStep.getBoundingClientRect().top + window.scrollY - anchor;
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+
+      window.setTimeout(() => {
+        snapLockRef.current = false;
+      }, 760);
+    }
+
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    return () => window.removeEventListener("wheel", handleWheel);
+  }, []);
+
   return (
     <section className="info" id="movement">
       <div className="info-marquee">
@@ -1812,46 +2072,66 @@ function InfoSections() {
         <strong>Vol. 01 — 2026</strong>
       </div>
 
-      <div className="info-intro">
-        <div>
-          <p className="eyebrow">The WAI Principles</p>
-          <h2>Three quiet ideas, <em>built into every pair.</em></h2>
-        </div>
-        <p>
-          We don’t design sneakers. We design feel-shoes — a category that begins with the foot,
-          ends with the silhouette, and passes through everything in between. What follows is the index.
-        </p>
-      </div>
+      <div className="info-story" ref={storyRef}>
+        <aside className="info-story-sticky">
+          <div>
+            <p className="eyebrow">The WAI Principles</p>
+            <h2>Three quiet ideas, <em>built into every pair.</em></h2>
+            <p className="info-story-copy">
+              We don’t design sneakers. We design feel-shoes — a category that begins with the foot,
+              ends with the silhouette, and passes through everything in between. What follows is the index.
+            </p>
+          </div>
+          <div className="info-progress" aria-label="WAI principles progress">
+            {INFO_BLOCKS.map((block, index) => (
+              <div
+                className={`info-progress-item${activeInfoIndex === index ? " is-active" : ""}`}
+                key={block.num}
+              >
+                <span className="info-progress-num">{block.num}</span>
+                <span>{block.plateMark}</span>
+              </div>
+            ))}
+          </div>
+        </aside>
 
-      <div className="info-blocks">
-        {INFO_BLOCKS.map((block, i) => (
-          <article className={`info-block${i % 2 === 1 ? " reverse" : ""}`} key={block.num}>
-            <div className={`info-block-plate ${block.tone}`}>
-              <span className="info-block-plate-meta">{block.plateMeta}</span>
-              <span className="info-block-numeral">{block.num}</span>
-              <span className="info-block-plate-mark">— {block.plateMark}</span>
-              <span className="info-block-plate-arc" />
-            </div>
-            <div className="info-block-copy">
-              <div className="info-marker">
-                <span className="info-marker-num">{block.num}</span>
-                <span className="info-marker-line" />
-                <span className="info-marker-tag">{block.tag}</span>
+        <div className="info-steps">
+          {INFO_BLOCKS.map((block, i) => (
+            <article
+              className={`info-step${activeInfoIndex === i ? " is-active" : ""}`}
+              data-index={i}
+              key={block.num}
+              ref={(node) => {
+                stepRefs.current[i] = node;
+              }}
+            >
+              <div className={`info-block-plate ${block.tone}`}>
+                <span className="info-block-plate-meta">{block.plateMeta}</span>
+                <span className="info-block-numeral">{block.num}</span>
+                <span className="info-block-plate-mark">— {block.plateMark}</span>
+                <span className="info-block-plate-arc" />
               </div>
-              <h3>{block.heading}</h3>
-              <p>{block.body}</p>
-              <blockquote className="info-quote">{block.quote}</blockquote>
-              <div className="info-specs">
-                {block.specs.map(([label, value]) => (
-                  <div className="info-spec" key={label}>
-                    <span>{label}</span>
-                    <strong>{value}</strong>
-                  </div>
-                ))}
+              <div className="info-block-copy">
+                <div className="info-marker">
+                  <span className="info-marker-num">{block.num}</span>
+                  <span className="info-marker-line" />
+                  <span className="info-marker-tag">{block.tag}</span>
+                </div>
+                <h3>{block.heading}</h3>
+                <p>{block.body}</p>
+                <blockquote className="info-quote">{block.quote}</blockquote>
+                <div className="info-specs">
+                  {block.specs.map(([label, value]) => (
+                    <div className="info-spec" key={label}>
+                      <span>{label}</span>
+                      <strong>{value}</strong>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          ))}
+        </div>
       </div>
 
       <div className="info-manifesto">
@@ -1882,7 +2162,10 @@ function ProductDetail({ product, selectedSize, setSelectedSize, onBack, onAdd }
           <img src={product.hoverImage || product.image} alt={product.name} />
         </div>
         <div className="detail-panel">
-          <button className="back" type="button" onClick={onBack}>Back to shop</button>
+          <button className="back" type="button" onClick={onBack}>
+            <span aria-hidden="true">←</span>
+            Back to shop
+          </button>
           <p className="eyebrow">{product.material}</p>
           <h1>{product.name}</h1>
           <p className="detail-sub">{product.subtitle} · {product.color}</p>
@@ -1962,7 +2245,7 @@ function Footer() {
       <div className="footer-inner">
         <div>
           <p className="footer-brand">WAI</p>
-          <p>Feel Shoes für natuerliche Bewegung. Ruhig im Design, leicht am Fuss.</p>
+          <p>Feel Shoes für natürliche Bewegung. Ruhig im Design, leicht am Fuß.</p>
         </div>
         <div className="footer-links">
           <a href="#shop">Shop</a>
