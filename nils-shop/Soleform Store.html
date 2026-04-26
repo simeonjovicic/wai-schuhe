@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SOLEFORM — Der Barfußschuh-Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f7f3ef;
+  --bg2: #efe9e1;
+  --ink: #1a120b;
+  --ink2: #5a4a3a;
+  --accent: #c4652a;
+  --accent2: #e8a070;
+  --sand: #e0d6c8;
+  --white: #fdfaf7;
+  --ff-head: 'Playfair Display', Georgia, serif;
+  --ff-body: 'DM Sans', system-ui, sans-serif;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--ink); font-family: var(--ff-body); font-size: 15px; line-height: 1.6; }
+img { display: block; max-width: 100%; }
+button { cursor: pointer; font-family: var(--ff-body); }
+
+/* ── TRUST TICKER ── */
+.ticker { background: var(--ink); color: var(--sand); font-size: 12px; letter-spacing: 0.06em; padding: 8px 0; overflow: hidden; }
+.ticker-inner { display: flex; gap: 60px; animation: ticker 28s linear infinite; white-space: nowrap; }
+@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.ticker-item { flex-shrink: 0; }
+.ticker-dot { color: var(--accent2); margin: 0 8px; }
+
+/* ── NAV ── */
+.nav { position: sticky; top: 0; z-index: 100; background: var(--white); border-bottom: 1px solid var(--sand); display: flex; align-items: center; padding: 0 40px; height: 64px; gap: 32px; }
+.nav-logo { font-family: var(--ff-head); font-size: 22px; font-weight: 700; letter-spacing: 0.12em; color: var(--ink); text-decoration: none; margin-right: auto; flex-shrink: 0; }
+.nav-links { display: flex; gap: 28px; font-size: 13px; font-weight: 500; letter-spacing: 0.04em; }
+.nav-links a { color: var(--ink2); text-decoration: none; transition: color 0.2s; }
+.nav-links a:hover { color: var(--accent); }
+.nav-actions { display: flex; gap: 10px; align-items: center; }
+.btn-ghost { border: 1.5px solid var(--sand); background: none; padding: 7px 18px; font-size: 13px; color: var(--ink2); border-radius: 3px; transition: all 0.2s; }
+.btn-ghost:hover { border-color: var(--ink); color: var(--ink); }
+.btn-dark { background: var(--ink); color: var(--white); border: 1.5px solid var(--ink); padding: 7px 18px; font-size: 13px; border-radius: 3px; transition: all 0.2s; }
+.btn-dark:hover { background: var(--accent); border-color: var(--accent); }
+
+/* ── HERO ── */
+.hero { display: grid; grid-template-columns: 1fr 1fr; min-height: 88vh; }
+.hero-left { display: flex; flex-direction: column; justify-content: center; padding: 80px 60px 80px 80px; }
+.hero-eyebrow { font-size: 11px; letter-spacing: 0.2em; color: var(--accent); text-transform: uppercase; margin-bottom: 20px; font-weight: 600; }
+.hero-h1 { font-family: var(--ff-head); font-size: clamp(42px, 4.5vw, 64px); line-height: 1.08; color: var(--ink); margin-bottom: 24px; font-weight: 700; }
+.hero-h1 em { font-style: italic; color: var(--accent); }
+.hero-sub { font-size: 16px; color: var(--ink2); line-height: 1.7; max-width: 400px; margin-bottom: 36px; font-weight: 300; }
+.hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 48px; }
+.btn-primary { background: var(--accent); color: var(--white); border: none; padding: 14px 32px; font-size: 14px; font-weight: 600; border-radius: 3px; letter-spacing: 0.04em; transition: all 0.22s; }
+.btn-primary:hover { background: #a84f1e; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(196,101,42,0.28); }
+.btn-outline { background: none; color: var(--ink); border: 1.5px solid var(--ink); padding: 13px 28px; font-size: 14px; font-weight: 500; border-radius: 3px; transition: all 0.2s; }
+.btn-outline:hover { background: var(--ink); color: var(--white); }
+.hero-stats { display: flex; gap: 36px; }
+.hero-stat-num { font-family: var(--ff-head); font-size: 28px; font-weight: 700; color: var(--ink); line-height: 1; }
+.hero-stat-label { font-size: 11px; color: var(--ink2); letter-spacing: 0.06em; margin-top: 2px; }
+.hero-right { background: var(--bg2); position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.hero-img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.hero-badge { position: absolute; bottom: 36px; right: 36px; background: var(--white); border: 1px solid var(--sand); border-radius: 6px; padding: 14px 18px; box-shadow: 0 8px 32px rgba(26,18,11,0.12); }
+.hero-badge-top { font-size: 11px; color: var(--ink2); letter-spacing: 0.06em; margin-bottom: 2px; }
+.hero-badge-main { font-family: var(--ff-head); font-size: 15px; font-weight: 600; }
+.hero-badge-stars { color: var(--accent); font-size: 13px; margin-top: 4px; letter-spacing: 2px; }
+
+/* ── TRUST BAR ── */
+.trust-bar { background: var(--white); border-top: 1px solid var(--sand); border-bottom: 1px solid var(--sand); display: flex; justify-content: center; gap: 0; }
+.trust-item { display: flex; align-items: center; gap: 10px; padding: 18px 36px; border-right: 1px solid var(--sand); font-size: 13px; font-weight: 500; color: var(--ink2); }
+.trust-item:last-child { border-right: none; }
+.trust-icon { font-size: 18px; }
+
+/* ── BRANDS ── */
+.brands { padding: 56px 80px; }
+.section-label { font-size: 11px; letter-spacing: 0.18em; color: var(--accent); text-transform: uppercase; font-weight: 600; margin-bottom: 8px; }
+.section-title { font-family: var(--ff-head); font-size: 28px; font-weight: 600; color: var(--ink); margin-bottom: 32px; }
+.brand-logos { display: flex; gap: 12px; flex-wrap: wrap; }
+.brand-chip { border: 1.5px solid var(--sand); background: var(--white); padding: 10px 22px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; border-radius: 3px; color: var(--ink2); cursor: pointer; transition: all 0.18s; }
+.brand-chip:hover { border-color: var(--accent); color: var(--accent); background: #fdf0e8; }
+.brand-chip.active { border-color: var(--ink); background: var(--ink); color: var(--white); }
+
+/* ── PRODUCTS ── */
+.products { padding: 0 80px 72px; }
+.prod-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--sand); margin-bottom: 36px; }
+.prod-tab { background: none; border: none; padding: 12px 28px; font-size: 14px; font-weight: 500; color: var(--ink2); border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.18s; letter-spacing: 0.02em; }
+.prod-tab.active { color: var(--ink); border-bottom-color: var(--ink); font-weight: 600; }
+.prod-tab:hover { color: var(--ink); }
+.prod-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+.prod-card { background: var(--white); border: 1px solid var(--sand); border-radius: 4px; overflow: hidden; cursor: pointer; transition: all 0.22s; position: relative; }
+.prod-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(26,18,11,0.10); border-color: var(--sand); }
+.prod-img-wrap { position: relative; aspect-ratio: 3/4; overflow: hidden; background: var(--bg2); }
+.prod-img-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform 0.4s; }
+.prod-card:hover .prod-img-wrap img { transform: scale(1.04); }
+.prod-badge { position: absolute; top: 12px; left: 12px; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; padding: 3px 8px; border-radius: 2px; }
+.badge-new { background: var(--ink); color: var(--white); }
+.badge-hot { background: var(--accent); color: var(--white); }
+.badge-sale { background: #2a6b3a; color: var(--white); }
+.prod-stock { position: absolute; bottom: 10px; right: 10px; background: rgba(253,250,247,0.92); border: 1px solid var(--sand); border-radius: 20px; font-size: 10px; padding: 3px 10px; color: var(--ink2); font-weight: 500; }
+.prod-info { padding: 14px 16px 18px; }
+.prod-brand { font-size: 11px; letter-spacing: 0.08em; color: var(--accent); font-weight: 600; text-transform: uppercase; margin-bottom: 3px; }
+.prod-name { font-family: var(--ff-head); font-size: 16px; font-weight: 600; color: var(--ink); margin-bottom: 4px; line-height: 1.2; }
+.prod-desc { font-size: 12px; color: var(--ink2); margin-bottom: 10px; line-height: 1.5; }
+.prod-bottom { display: flex; justify-content: space-between; align-items: center; }
+.prod-price { font-size: 18px; font-weight: 700; color: var(--ink); font-family: var(--ff-head); }
+.prod-price-old { font-size: 13px; color: var(--ink2); text-decoration: line-through; margin-left: 6px; font-weight: 400; }
+.prod-add { background: var(--ink); color: var(--white); border: none; width: 36px; height: 36px; border-radius: 3px; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: background 0.18s; }
+.prod-add:hover { background: var(--accent); }
+.prod-colors { display: flex; gap: 5px; margin-bottom: 10px; }
+.color-dot { width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid var(--sand); cursor: pointer; }
+
+/* ── WHY BAREFOOT ── */
+.why { display: grid; grid-template-columns: 1fr 1fr; gap: 0; background: var(--ink); }
+.why-left { padding: 80px; }
+.why-eyebrow { font-size: 11px; letter-spacing: 0.18em; color: var(--accent2); text-transform: uppercase; font-weight: 600; margin-bottom: 14px; }
+.why-title { font-family: var(--ff-head); font-size: 40px; font-weight: 700; color: var(--white); line-height: 1.1; margin-bottom: 24px; }
+.why-title em { font-style: italic; color: var(--accent2); }
+.why-sub { font-size: 15px; color: #b0a090; line-height: 1.8; margin-bottom: 40px; font-weight: 300; }
+.why-features { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 36px; }
+.why-feat { border-top: 1px solid #3a2a1a; padding-top: 16px; }
+.why-feat-title { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+.why-feat-text { font-size: 12px; color: #8a7a68; line-height: 1.6; }
+.why-right { position: relative; overflow: hidden; min-height: 520px; }
+.why-right img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+
+/* ── SOCIAL PROOF ── */
+.proof { padding: 72px 80px; background: var(--white); }
+.proof-top { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
+.proof-rating { display: flex; align-items: center; gap: 16px; }
+.proof-big-num { font-family: var(--ff-head); font-size: 56px; font-weight: 700; color: var(--ink); line-height: 1; }
+.proof-stars-row { display: flex; gap: 4px; margin-bottom: 4px; }
+.star-filled { color: var(--accent); font-size: 18px; }
+.proof-count { font-size: 13px; color: var(--ink2); }
+.reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.review-card { background: var(--bg); border: 1px solid var(--sand); border-radius: 4px; padding: 24px; }
+.review-stars { color: var(--accent); font-size: 13px; letter-spacing: 2px; margin-bottom: 12px; }
+.review-text { font-size: 14px; color: var(--ink); line-height: 1.7; margin-bottom: 14px; font-style: italic; font-family: var(--ff-head); font-weight: 400; }
+.review-author { font-size: 12px; color: var(--ink2); font-weight: 600; letter-spacing: 0.04em; }
+.review-verified { font-size: 10px; color: #4a9a5a; letter-spacing: 0.04em; margin-top: 2px; font-weight: 500; }
+
+/* ── EDUCATION STRIP ── */
+.edu { padding: 64px 80px; background: var(--bg2); display: flex; gap: 60px; align-items: center; }
+.edu-text { flex: 1; }
+.edu-points { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.edu-point { background: var(--white); border: 1px solid var(--sand); border-radius: 4px; padding: 20px; }
+.edu-point-icon { font-size: 22px; margin-bottom: 8px; }
+.edu-point-title { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+.edu-point-text { font-size: 12px; color: var(--ink2); line-height: 1.6; }
+
+/* ── NEWSLETTER ── */
+.newsletter { padding: 72px 80px; background: var(--accent); display: flex; justify-content: space-between; align-items: center; gap: 40px; }
+.nl-text {}
+.nl-title { font-family: var(--ff-head); font-size: 32px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+.nl-sub { font-size: 14px; color: rgba(255,255,255,0.78); }
+.nl-form { display: flex; gap: 10px; flex-shrink: 0; }
+.nl-input { border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.15); color: var(--white); padding: 14px 20px; font-size: 14px; border-radius: 3px; width: 260px; font-family: var(--ff-body); backdrop-filter: blur(4px); }
+.nl-input::placeholder { color: rgba(255,255,255,0.55); }
+.nl-input:focus { outline: none; border-color: rgba(255,255,255,0.7); }
+.nl-btn { background: var(--ink); color: var(--white); border: none; padding: 14px 28px; font-size: 14px; font-weight: 600; border-radius: 3px; transition: background 0.18s; font-family: var(--ff-body); }
+.nl-btn:hover { background: #2e1e10; }
+
+/* ── FOOTER ── */
+.footer { background: var(--ink); color: #8a7a68; padding: 56px 80px 32px; }
+.footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+.footer-brand { font-family: var(--ff-head); font-size: 24px; font-weight: 700; color: var(--white); letter-spacing: 0.1em; margin-bottom: 12px; }
+.footer-tagline { font-size: 13px; line-height: 1.7; color: #6a5a48; }
+.footer-col-title { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; color: var(--sand); margin-bottom: 14px; }
+.footer-link { display: block; font-size: 13px; color: #6a5a48; margin-bottom: 8px; text-decoration: none; transition: color 0.15s; cursor: pointer; }
+.footer-link:hover { color: var(--sand); }
+.footer-bottom { border-top: 1px solid #2a1a0e; padding-top: 24px; display: flex; justify-content: space-between; font-size: 12px; color: #4a3a28; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accentColor": "#c4652a",
+  "heroHeadline": "Schuhe, die deinen Füßen Freiheit geben.",
+  "showUrgency": true,
+  "showEducation": true,
+  "heroLayout": "split"
+}/*EDITMODE-END*/;
+
+const PRODUCTS = [
+  { id:1, brand:'WAI', name:'Linen Slip-On', desc:'Natürlicher Flachs, weite Zehenbox', price:139, colors:['#c8b89a','#1a1a2e','#6b7a6b'], badge:'new', stock:4, tab:'new', img:'uploads/wai1_front.jpeg', imgBack:'uploads/wai1_behind.jpeg' },
+  { id:2, brand:'WAI', name:'Canvas Loafer', desc:'Denim, zero-drop Sohle', price:149, colors:['#2d3a5a','#1a1a1a'], badge:'hot', stock:8, tab:'new', img:'uploads/wai_front.jpeg', imgBack:'uploads/wai_behind.jpeg' },
+  { id:3, brand:'WAI', name:'Heritage Slip-On', desc:'Fischgrät-Muster, Leder-Fersenkappe', price:159, colors:['#8a7a6a','#c8a86a'], badge:'', stock:12, tab:'bestseller', img:'uploads/wai3_front.jpeg', imgBack:'uploads/wai3_behind.jpeg' },
+  { id:4, brand:'WAI', name:'Urban Walker', desc:'Naturtöne, flexible Gummisohle', price:139, colors:['#b89a7a','#3a3028'], badge:'hot', stock:6, tab:'bestseller', img:'uploads/wai2_front.jpeg', imgBack:'uploads/wai2_behind.jpeg' },
+  { id:5, brand:'Vivobarefoot', name:'Primus Lite IV', desc:'Performance-Barfuß für Alltag & Sport', price:189, colors:['#1a1a1a','#4a6a3a','#8a6a4a'], badge:'', stock:15, tab:'bestseller', img:'', imgBack:'' },
+  { id:6, brand:'Xero Shoes', name:'Mesa Trail', desc:'Leichtgewicht, Geländegriff', price:119, colors:['#3a5a3a','#8a4a2a'], badge:'sale', stock:3, tab:'sale', img:'', imgBack:'', oldPrice:159 },
+  { id:7, brand:'Freet', name:'Feldom', desc:'Minimalistische Sneaker, UK-made', price:149, colors:['#2a2a2a','#6a8a6a'], badge:'new', stock:9, tab:'new', img:'', imgBack:'' },
+  { id:8, brand:'Wildling', name:'Tanuki Light', desc:'Für Kinder — wächst mit dem Fuß mit', price:89, colors:['#6a8a6a','#c8a86a'], badge:'', stock:20, tab:'bestseller', img:'', imgBack:'' },
+];
+
+const BRANDS = ['Alle','Vivobarefoot','Xero Shoes','Freet','Lems','WAI','Groundies','Wildling','Be Lenka'];
+const TABS = [{id:'new', label:'Neu'},{id:'bestseller', label:'Bestseller'},{id:'sale', label:'Sale'}];
+
+const TICKER_ITEMS = [
+  'Kostenloser Versand ab €79','30-Tage Rückgabe','Barfuß-Beratung inklusive','Über 15 Marken','Aus Deutschland',
+  '★ 4.9/5 von 2.400+ Kunden','Zero Drop · Weite Zehenbox · Natürliche Flex','Kostenloser Versand ab €79',
+  '30-Tage Rückgabe','Barfuß-Beratung inklusive','Über 15 Marken','Aus Deutschland','★ 4.9/5 von 2.400+ Kunden','Zero Drop · Weite Zehenbox · Natürliche Flex',
+];
+
+const PlaceholderImg = ({ label, style }) => (
+  <div style={{ width:'100%', height:'100%', background:'repeating-linear-gradient(45deg,#ede9e3,#ede9e3 6px,#e0d8ce 6px,#e0d8ce 12px)', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', color:'#9a8878', fontFamily:'monospace', fontSize:11, textAlign:'center', padding:16, ...style }}>
+    <div style={{marginBottom:4,fontSize:20,opacity:.4}}>◻</div>
+    <div>{label}</div>
+  </div>
+);
+
+const ProductCard = ({ product }) => {
+  const [hovered, setHovered] = useState(false);
+  const src = hovered && product.imgBack ? product.imgBack : product.img;
+  return (
+    <div className="prod-card" onMouseEnter={()=>setHovered(true)} onMouseLeave={()=>setHovered(false)}>
+      <div className="prod-img-wrap">
+        {src ? <img src={src} alt={product.name}/> : <PlaceholderImg label={`${product.brand} — ${product.name}`}/>}
+        {product.badge && <span className={`prod-badge badge-${product.badge}`}>{product.badge==='new'?'NEU':product.badge==='hot'?'BELIEBT':'SALE'}</span>}
+        {product.stock <= 5 && <span className="prod-stock">Nur noch {product.stock} verfügbar</span>}
+      </div>
+      <div className="prod-info">
+        <div className="prod-brand">{product.brand}</div>
+        <div className="prod-name">{product.name}</div>
+        <div className="prod-desc">{product.desc}</div>
+        <div className="prod-colors">
+          {product.colors.map((c,i)=><div key={i} className="color-dot" style={{background:c}}/>)}
+        </div>
+        <div className="prod-bottom">
+          <div>
+            <span className="prod-price">€{product.price}</span>
+            {product.oldPrice && <span className="prod-price-old">€{product.oldPrice}</span>}
+          </div>
+          <button className="prod-add" title="In den Warenkorb">+</button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const App = () => {
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const [activeTab, setActiveTab] = useState('new');
+  const [activeBrand, setActiveBrand] = useState('Alle');
+
+  const filtered = PRODUCTS.filter(p =>
+    p.tab === activeTab && (activeBrand === 'Alle' || p.brand === activeBrand)
+  );
+
+  return (
+    <>
+      {/* TICKER */}
+      <div className="ticker">
+        <div className="ticker-inner">
+          {TICKER_ITEMS.map((t,i)=>(
+            <span key={i} className="ticker-item">{t}<span className="ticker-dot">·</span></span>
+          ))}
+        </div>
+      </div>
+
+      {/* NAV */}
+      <nav className="nav">
+        <a href="#" className="nav-logo">SOLEFORM</a>
+        <div className="nav-links">
+          <a href="#">Schuhe</a>
+          <a href="#">Marken</a>
+          <a href="#">Barfuß-Guide</a>
+          <a href="#">Sale</a>
+          <a href="#">Über uns</a>
+        </div>
+        <div className="nav-actions">
+          <button className="btn-ghost">Suche</button>
+          <button className="btn-dark">Warenkorb (0)</button>
+        </div>
+      </nav>
+
+      {/* HERO */}
+      <section className="hero">
+        <div className="hero-left">
+          <div className="hero-eyebrow">Der Barfußschuh-Store · 15 Marken</div>
+          <h1 className="hero-h1">{tweaks.heroHeadline.split(',').map((part,i,arr)=>
+            i===arr.length-1 ? <em key={i}>{part}</em> : <span key={i}>{part},<br/></span>
+          )}</h1>
+          <p className="hero-sub">Kuratierte Barfuß- und Minimalschuhe von den besten Marken der Welt — für jeden Fuß, jeden Untergrund und jeden Anlass.</p>
+          <div className="hero-ctas">
+            <button className="btn-primary">Jetzt entdecken</button>
+            <button className="btn-outline">Was ist Barfußlaufen?</button>
+          </div>
+          <div className="hero-stats">
+            <div>
+              <div className="hero-stat-num">500+</div>
+              <div className="hero-stat-label">MODELLE</div>
+            </div>
+            <div>
+              <div className="hero-stat-num">15</div>
+              <div className="hero-stat-label">MARKEN</div>
+            </div>
+            <div>
+              <div className="hero-stat-num">4.9★</div>
+              <div className="hero-stat-label">BEWERTUNG</div>
+            </div>
+          </div>
+        </div>
+        <div className="hero-right">
+          <img className="hero-img" src="uploads/wai1_behind.jpeg" alt="Barfußschuh schwebt"/>
+          <div className="hero-badge">
+            <div className="hero-badge-top">BESTSELLER</div>
+            <div className="hero-badge-main">WAI Linen Slip-On</div>
+            <div className="hero-badge-stars">★★★★★</div>
+          </div>
+        </div>
+      </section>
+
+      {/* TRUST BAR */}
+      <div className="trust-bar">
+        <div className="trust-item"><span className="trust-icon">↩</span> 30-Tage Rückgabe</div>
+        <div className="trust-item"><span className="trust-icon">✦</span> Kuratiert von Experten</div>
+        <div className="trust-item"><span className="trust-icon">⚡</span> Versand in 24h</div>
+        <div className="trust-item"><span className="trust-icon">✓</span> Podologen-empfohlen</div>
+        <div className="trust-item"><span className="trust-icon">◎</span> Kostenlose Beratung</div>
+      </div>
+
+      {/* BRANDS */}
+      <section className="brands">
+        <div className="section-label">Unsere Marken</div>
+        <div className="section-title">Alle Marken. Ein Store.</div>
+        <div className="brand-logos">
+          {BRANDS.map(b=>(
+            <button key={b} className={`brand-chip ${activeBrand===b?'active':''}`} onClick={()=>setActiveBrand(b)}>{b}</button>
+          ))}
+        </div>
+      </section>
+
+      {/* PRODUCTS */}
+      <section className="products">
+        <div className="prod-tabs">
+          {TABS.map(t=>(
+            <button key={t.id} className={`prod-tab ${activeTab===t.id?'active':''}`} onClick={()=>setActiveTab(t.id)}>{t.label}</button>
+          ))}
+        </div>
+        {filtered.length > 0 ? (
+          <div className="prod-grid">
+            {filtered.map(p=><ProductCard key={p.id} product={p}/>)}
+          </div>
+        ) : (
+          <div style={{textAlign:'center',padding:'60px 0',color:'var(--ink2)',fontSize:15}}>
+            Keine Produkte in dieser Kombination gefunden.<br/>
+            <button className="btn-outline" style={{marginTop:16}} onClick={()=>setActiveBrand('Alle')}>Alle Marken anzeigen</button>
+          </div>
+        )}
+        <div style={{textAlign:'center',marginTop:40}}>
+          <button className="btn-outline" style={{padding:'14px 48px',fontSize:14}}>Alle Schuhe ansehen →</button>
+        </div>
+      </section>
+
+      {/* WHY BAREFOOT */}
+      {tweaks.showEducation && (
+        <section className="why">
+          <div className="why-left">
+            <div className="why-eyebrow">Warum Barfuß?</div>
+            <h2 className="why-title">Deine Füße sind <em>von Natur aus</em> perfekt.</h2>
+            <p className="why-sub">Konventionelle Schuhe schwächen die Fußmuskulatur, stören die Haltung und unterdrücken die natürliche Bewegung. Barfußschuhe arbeiten mit deinem Fuß — nicht dagegen.</p>
+            <div className="why-features">
+              <div className="why-feat">
+                <div className="why-feat-title">Weite Zehenbox</div>
+                <div className="why-feat-text">Zehen können sich spreizen — mehr Stabilität und Balance.</div>
+              </div>
+              <div className="why-feat">
+                <div className="why-feat-title">Zero Drop</div>
+                <div className="why-feat-text">Keine Absatzerhöhung — natürliche Körperhaltung von Kopf bis Fuß.</div>
+              </div>
+              <div className="why-feat">
+                <div className="why-feat-title">Flexible Sohle</div>
+                <div className="why-feat-text">Der Fuß bewegt sich frei — stärkt über 100 Muskeln und Sehnen.</div>
+              </div>
+              <div className="why-feat">
+                <div className="why-feat-title">Bodenspüren</div>
+                <div className="why-feat-text">Propriozeption — dein Körper weiß wieder, wo er steht.</div>
+              </div>
+            </div>
+            <button className="btn-primary" style={{alignSelf:'flex-start'}}>Zum Barfuß-Guide →</button>
+          </div>
+          <div className="why-right">
+            <img src="uploads/wai3_behind.jpeg" alt="Barfußschuh Sohle"/>
+          </div>
+        </section>
+      )}
+
+      {/* EDUCATION STRIP */}
+      <section className="edu">
+        <div className="edu-text">
+          <div className="section-label">Neu einsteigen</div>
+          <div className="section-title" style={{marginBottom:16}}>Nicht sicher, womit du anfangen sollst?</div>
+          <p style={{color:'var(--ink2)',fontSize:14,lineHeight:1.8,marginBottom:24,maxWidth:380}}>Unser kostenloser Barfuß-Guide hilft dir, den richtigen Einstieg zu finden — von der Modellwahl bis zur Eingewöhnungsphase.</p>
+          <button className="btn-primary">Gratis Beratung starten</button>
+        </div>
+        <div className="edu-points">
+          {[
+            {icon:'◎',title:'Maß nehmen',text:'Füßlänge und -breite messen für perfekten Sitz'},
+            {icon:'◈',title:'Modell wählen',text:'Alltag, Trail oder Wasser — wir helfen dir beim Vergleich'},
+            {icon:'◇',title:'Eingewöhnen',text:'Step-by-Step Plan für einen gesunden Übergang'},
+            {icon:'✦',title:'Experten fragen',text:'Chat oder Rückruf — kostenlos, ohne Kaufzwang'},
+          ].map((p,i)=>(
+            <div key={i} className="edu-point">
+              <div className="edu-point-icon">{p.icon}</div>
+              <div className="edu-point-title">{p.title}</div>
+              <div className="edu-point-text">{p.text}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* SOCIAL PROOF */}
+      <section className="proof">
+        <div className="proof-top">
+          <div className="proof-rating">
+            <div className="proof-big-num">4.9</div>
+            <div>
+              <div className="proof-stars-row">
+                {'★★★★★'.split('').map((s,i)=><span key={i} className="star-filled">{s}</span>)}
+              </div>
+              <div className="proof-count">aus 2.418 verifizierten Bewertungen</div>
+            </div>
+          </div>
+          <button className="btn-outline" style={{fontSize:13}}>Alle Bewertungen lesen →</button>
+        </div>
+        <div className="reviews-grid">
+          {[
+            {stars:'★★★★★',text:'"Ich hätte nie gedacht, dass Schuhe so einen Unterschied machen. Meine Knieschmerzen sind nach 3 Wochen fast verschwunden."',author:'Maja T., München',verified:true},
+            {stars:'★★★★★',text:'"Die Auswahl ist unglaublich. Endlich ein Store, der wirklich alle guten Marken hat — und die Beratung war top."',author:'Lars K., Hamburg',verified:true},
+            {stars:'★★★★☆',text:'"Tolle Qualität, schnelle Lieferung. Der Rückgabeprozess war unkompliziert. Werde wieder bestellen."',author:'Sam R., Berlin',verified:true},
+          ].map((r,i)=>(
+            <div key={i} className="review-card">
+              <div className="review-stars">{r.stars}</div>
+              <div className="review-text">{r.text}</div>
+              <div className="review-author">{r.author}</div>
+              {r.verified && <div className="review-verified">✓ Verifizierter Kauf</div>}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* NEWSLETTER */}
+      <section className="newsletter">
+        <div className="nl-text">
+          <div className="nl-title">Der Barfuß-Brief.</div>
+          <div className="nl-sub">Neue Modelle · Expertentipps · exklusive Deals — direkt ins Postfach.</div>
+        </div>
+        <div className="nl-form">
+          <input className="nl-input" type="email" placeholder="deine@email.de"/>
+          <button className="nl-btn">Anmelden</button>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="footer">
+        <div className="footer-top">
+          <div>
+            <div className="footer-brand">SOLEFORM</div>
+            <div className="footer-tagline">Der kuratierte Barfußschuh-Store.<br/>15 Marken, 500+ Modelle, ein Ziel:<br/>deine Füße frei machen.</div>
+          </div>
+          <div>
+            <div className="footer-col-title">Shop</div>
+            <a className="footer-link">Alle Schuhe</a>
+            <a className="footer-link">Marken</a>
+            <a className="footer-link">Neuheiten</a>
+            <a className="footer-link">Sale</a>
+          </div>
+          <div>
+            <div className="footer-col-title">Service</div>
+            <a className="footer-link">Barfuß-Guide</a>
+            <a className="footer-link">Größenberatung</a>
+            <a className="footer-link">Rückgabe</a>
+            <a className="footer-link">Kontakt</a>
+          </div>
+          <div>
+            <div className="footer-col-title">SOLEFORM</div>
+            <a className="footer-link">Über uns</a>
+            <a className="footer-link">Instagram</a>
+            <a className="footer-link">Impressum</a>
+            <a className="footer-link">Datenschutz</a>
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <span>© 2026 SOLEFORM GmbH · Made in Germany</span>
+          <span>Visa · Mastercard · PayPal · Klarna</span>
+        </div>
+      </footer>
+
+      <TweaksPanel>
+        <TweakColor label="Akzentfarbe" value={tweaks.accentColor} onChange={v=>{setTweak('accentColor',v); document.documentElement.style.setProperty('--accent',v);}}/>
+        <TweakText label="Hero-Headline" value={tweaks.heroHeadline} onChange={v=>setTweak('heroHeadline',v)}/>
+        <TweakToggle label="Barfuß-Sektion anzeigen" value={tweaks.showEducation} onChange={v=>setTweak('showEducation',v)}/>
+        <TweakToggle label="Lager-Warnungen anzeigen" value={tweaks.showUrgency} onChange={v=>setTweak('showUrgency',v)}/>
+      </TweaksPanel>
+    </>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

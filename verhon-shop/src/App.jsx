@@ -9,7 +9,7 @@ const FRAMES = Array.from({ length: FRAME_COUNT }, (_, i) =>
 const PRODUCTS = [
   {
     id: 1,
-    name: "WAVII Home",
+    name: "WAI Home",
     subtitle: "Indoor Feel Shoe",
     price: 169,
     color: "Indigo",
@@ -24,7 +24,7 @@ const PRODUCTS = [
   },
   {
     id: 2,
-    name: "WAVII Travel",
+    name: "WAI Travel",
     subtitle: "Packable Loafer",
     price: 179,
     color: "Deep Navy",
@@ -39,7 +39,7 @@ const PRODUCTS = [
   },
   {
     id: 3,
-    name: "WAVII Flex",
+    name: "WAI Flex",
     subtitle: "Barefoot Technology",
     price: 189,
     color: "Blue Canvas",
@@ -54,7 +54,7 @@ const PRODUCTS = [
   },
   {
     id: 4,
-    name: "WAVII Lounge",
+    name: "WAI Lounge",
     subtitle: "Soft Everyday Slip-on",
     price: 159,
     color: "Washed Blue",
@@ -69,7 +69,7 @@ const PRODUCTS = [
   },
   {
     id: 5,
-    name: "WAVII Studio",
+    name: "WAI Studio",
     subtitle: "Natural Movement",
     price: 174,
     color: "Ocean Blue",
@@ -84,7 +84,7 @@ const PRODUCTS = [
   },
   {
     id: 6,
-    name: "WAVII Classic",
+    name: "WAI Classic",
     subtitle: "All-day Feel Shoe",
     price: 184,
     color: "Midnight",
@@ -1714,7 +1714,7 @@ function Navigation({ scrolled, dark, bagCount, onBag, onHome }) {
         <a className="nav-link" href="#story">Design</a>
         <a className="nav-link" href="#movement">Movement</a>
       </div>
-      <button className="brand" onClick={onHome} aria-label="Zur Startseite">WAI</button>
+      <button className="brand" onClick={onHome} aria-label="Zur Startseite">VERHON</button>
       <div className="nav-right">
         <a className="nav-link" href="#story">Made in Italy</a>
         <button className="bag-btn" onClick={onBag} aria-label="Warenkorb oeffnen">
