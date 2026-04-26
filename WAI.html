@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verhon — Feel Anywhere</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F7F3ED;
+      --bg-2: #EDE7DE;
+      --bg-dark: #1C1917;
+      --text: #1C1917;
+      --muted: #7A6E65;
+      --accent: #B8A898;
+      --accent-light: #EDE7DE;
+      --border: rgba(28,25,23,0.1);
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-weight: 300;
+      overflow-x: hidden;
+      transition: background 0.7s, color 0.7s;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 28px 52px;
+      transition: background 0.5s, backdrop-filter 0.5s, padding 0.4s, border-color 0.5s;
+      border-bottom: 1px solid transparent;
+    }
+    .nav.scrolled {
+      padding: 18px 52px;
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-color: var(--border);
+    }
+    .nav-logo {
+      font-family: var(--serif); font-size: 30px; font-weight: 400;
+      letter-spacing: 0.18em; cursor: pointer; color: var(--text);
+      transition: color 0.7s; text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 44px; }
+    .nav-links a {
+      font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--text); text-decoration: none; opacity: 0.6;
+      transition: opacity 0.25s; cursor: pointer;
+    }
+    .nav-links a:hover { opacity: 1; }
+    .nav-cart {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 22px; border: 1px solid var(--border); border-radius: 100px;
+      background: none; color: var(--text); font-family: var(--sans);
+      font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+      cursor: pointer; transition: background 0.25s, border-color 0.7s, color 0.7s;
+    }
+    .nav-cart:hover { background: var(--accent-light); }
+    .cart-badge {
+      background: var(--text); color: var(--bg);
+      width: 18px; height: 18px; border-radius: 50%; font-size: 10px;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.7s, color 0.7s;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100svh; display: grid;
+      grid-template-rows: auto 1fr auto;
+      align-items: start; text-align: center;
+      padding: 0 48px 80px; overflow: hidden;
+    }
+    .hero-top { padding-top: 140px; display: flex; flex-direction: column; align-items: center; }
+    .hero-eyebrow {
+      font-size: 10px; letter-spacing: 0.38em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 36px; transition: color 0.7s;
+    }
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(90px, 13.5vw, 172px);
+      font-weight: 300; line-height: 0.87; letter-spacing: -0.02em;
+      color: var(--text); transition: color 0.7s; margin-bottom: 40px;
+    }
+    .hero-title em { font-style: italic; color: var(--accent); transition: color 0.7s; }
+    .hero-center {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center;
+    }
+    .hero-shoe-wrap {
+      width: min(600px, 80vw); margin: 0 auto;
+      animation: float 7s ease-in-out infinite;
+      filter: drop-shadow(0 50px 80px rgba(0,0,0,0.11));
+      will-change: transform;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+      50% { transform: translateY(-24px) rotate(1deg); }
+    }
+    .hero-bottom {
+      display: flex; flex-direction: column; align-items: center; gap: 28px;
+    }
+    .hero-sub {
+      font-size: 16px; color: var(--muted); letter-spacing: 0.08em;
+      transition: color 0.7s;
+    }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 14px;
+      padding: 18px 52px; background: var(--text); color: var(--bg);
+      text-decoration: none; font-size: 11px; letter-spacing: 0.22em;
+      text-transform: uppercase; border-radius: 100px;
+      transition: transform 0.4s var(--ease), background 0.7s, color 0.7s;
+    }
+    .hero-cta:hover { transform: scale(1.05); }
+    .hero-cta .arr { display: inline-block; transition: transform 0.3s var(--ease); }
+    .hero-cta:hover .arr { transform: translateX(5px); }
+    .hero-scroll {
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      color: var(--muted); font-size: 9px; letter-spacing: 0.28em;
+      text-transform: uppercase; opacity: 0.55; transition: color 0.7s;
+    }
+    .scroll-line {
+      width: 1px; height: 44px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: pulse-line 2.4s ease-in-out infinite;
+    }
+    @keyframes pulse-line {
+      0%, 100% { opacity: 0.3; transform: scaleY(0.85) translateY(0); }
+      50% { opacity: 1; transform: scaleY(1.2) translateY(4px); }
+    }
+
+    /* ── GRAIN TEXTURE ── */
+    .hero::after {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.028; mix-blend-mode: multiply; z-index: 1;
+    }
+    .hero > * { position: relative; z-index: 2; }
+
+    /* ── MARQUEE TICKER ── */
+    .ticker-wrap {
+      background: var(--bg-dark); overflow: hidden;
+      padding: 14px 0; border-top: 1px solid rgba(255,255,255,0.06);
+      transition: background 0.7s;
+    }
+    .ticker-track {
+      display: flex; width: max-content;
+      animation: ticker 28s linear infinite;
+    }
+    .ticker-track:hover { animation-play-state: paused; }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .ticker-item {
+      display: flex; align-items: center; gap: 36px;
+      padding: 0 36px; white-space: nowrap;
+      font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+      color: rgba(240,235,227,0.45);
+    }
+    .ticker-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--accent); opacity: 0.6; }
+
+    /* ── STATS SECTION ── */
+    .section-stats {
+      padding: 0; border-bottom: 1px solid var(--border);
+      display: grid; grid-template-columns: repeat(4,1fr);
+      transition: border-color 0.7s;
+    }
+    .stat-item {
+      padding: 64px 52px; border-right: 1px solid var(--border);
+      transition: border-color 0.7s, background 0.4s;
+      cursor: default;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-item:hover { background: var(--accent-light); }
+    .stat-num {
+      font-family: var(--serif); font-size: clamp(52px, 5vw, 72px);
+      font-weight: 300; line-height: 1; color: var(--text);
+      margin-bottom: 10px; transition: color 0.7s;
+    }
+    .stat-num em { font-style: normal; color: var(--accent); transition: color 0.7s; }
+    .stat-label { font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); transition: color 0.7s; }
+
+    /* ── FOUNDER LETTER ── */
+    .section-founder {
+      padding: 160px 52px; background: var(--bg); transition: background 0.7s;
+    }
+    .founder-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 2fr; gap: 100px; align-items: start;
+    }
+    .founder-meta { padding-top: 8px; position: sticky; top: 120px; }
+    .founder-year {
+      font-family: var(--serif); font-size: 88px; font-weight: 300;
+      line-height: 1; color: var(--accent); opacity: 0.35;
+      transition: color 0.7s;
+    }
+    .founder-label { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--muted); margin-top: 16px; transition: color 0.7s; }
+    .founder-sig {
+      font-family: var(--serif); font-size: 28px; font-style: italic;
+      color: var(--text); margin-top: 40px; transition: color 0.7s;
+    }
+    .founder-body p {
+      font-family: var(--serif); font-size: clamp(20px, 2.2vw, 28px);
+      font-weight: 300; line-height: 1.65; color: var(--text);
+      margin-bottom: 32px; text-wrap: pretty; transition: color 0.7s;
+    }
+    .founder-body p em { font-style: italic; color: var(--muted); }
+    .founder-pull {
+      font-family: var(--serif); font-size: clamp(32px, 4vw, 52px);
+      font-weight: 300; font-style: italic; line-height: 1.15;
+      color: var(--text); border-left: 2px solid var(--accent);
+      padding-left: 40px; margin: 56px 0; transition: color 0.7s, border-color 0.7s;
+    }
+
+    /* ── PRESS STRIP ── */
+    .section-press {
+      padding: 64px 52px; border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border); transition: border-color 0.7s;
+    }
+    .press-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; gap: 60px;
+    }
+    .press-label { font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--muted); white-space: nowrap; flex-shrink: 0; transition: color 0.7s; }
+    .press-divider { width: 1px; height: 32px; background: var(--border); flex-shrink: 0; transition: background 0.7s; }
+    .press-logos { display: flex; align-items: center; gap: 56px; overflow: hidden; flex: 1; }
+    .press-name {
+      font-family: var(--serif); font-size: 18px; font-weight: 400;
+      color: var(--text); opacity: 0.3; white-space: nowrap;
+      transition: opacity 0.3s, color 0.7s; cursor: default; letter-spacing: 0.05em;
+    }
+    .press-name:hover { opacity: 0.7; }
+
+    /* ── REVEAL ── */
+    .reveal {
+      opacity: 0; transform: translateY(38px);
+      transition: opacity 1s var(--ease), transform 1s var(--ease);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .rd-1 { transition-delay: 0.12s; }
+    .rd-2 { transition-delay: 0.24s; }
+    .rd-3 { transition-delay: 0.36s; }
+    .rd-4 { transition-delay: 0.48s; }
+
+    /* ── MANIFESTO ── */
+    .section-manifesto {
+      background: var(--bg-dark); padding: 140px 52px;
+      overflow: hidden; transition: background 0.7s;
+    }
+    .manifesto-inner {
+      max-width: 1240px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+    }
+    .manifesto-quote {
+      font-family: var(--serif);
+      font-size: clamp(34px, 3.6vw, 54px);
+      font-weight: 300; line-height: 1.3; font-style: italic;
+      color: #F0EBE3;
+    }
+    .manifesto-quote strong { font-style: normal; font-weight: 400; color: var(--accent); }
+    .manifesto-sub {
+      font-size: 14px; color: rgba(240,235,227,0.48); line-height: 1.9;
+      margin-top: 30px; max-width: 380px;
+    }
+    .manifesto-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .m-tile { border-radius: 6px; overflow: hidden; aspect-ratio: 3/4; position: relative; cursor: pointer; }
+    .m-tile:first-child { grid-column: 1/-1; aspect-ratio: 16/7; }
+    .m-tile-bg { width: 100%; height: 100%; transition: transform 0.9s var(--ease); }
+    .m-tile:hover .m-tile-bg { transform: scale(1.05); }
+    .m-tile-label {
+      position: absolute; bottom: 16px; left: 18px;
+      font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(240,235,227,0.45);
+    }
+
+    /* ── PHILOSOPHY ── */
+    .section-philosophy { padding: 160px 52px; text-align: center; }
+    .philosophy-inner { max-width: 840px; margin: 0 auto; }
+    .pill-tag {
+      display: inline-block; padding: 7px 22px;
+      border: 1px solid var(--border); border-radius: 100px;
+      font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 48px; transition: border-color 0.7s, color 0.7s;
+    }
+    .section-h2 {
+      font-family: var(--serif); font-size: clamp(44px, 6.2vw, 86px);
+      font-weight: 300; line-height: 1.04; color: var(--text);
+      margin-bottom: 36px; transition: color 0.7s;
+    }
+    .section-h2 em { font-style: italic; }
+    .section-body {
+      font-size: 17px; line-height: 1.95; color: var(--muted);
+      max-width: 580px; margin: 0 auto; text-wrap: pretty;
+      transition: color 0.7s;
+    }
+    .philosophy-feats {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 2px; margin-top: 80px;
+    }
+    .pfeat {
+      background: var(--accent-light); padding: 48px 38px;
+      text-align: left; transition: background 0.7s, transform 0.5s var(--ease);
+    }
+    .pfeat:hover { transform: translateY(-4px); }
+    .pfeat-num {
+      font-family: var(--serif); font-size: 60px; font-weight: 300;
+      color: var(--accent); line-height: 1; margin-bottom: 18px; opacity: 0.5;
+      transition: color 0.7s;
+    }
+    .pfeat-title {
+      font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text); margin-bottom: 12px; transition: color 0.7s;
+    }
+    .pfeat-desc { font-size: 13px; line-height: 1.85; color: var(--muted); transition: color 0.7s; }
+
+    /* ── TECHNOLOGY ── */
+    .section-tech { background: var(--bg-2); padding: 160px 52px; transition: background 0.7s; }
+    .tech-inner { max-width: 1240px; margin: 0 auto; }
+    .tech-header { text-align: center; margin-bottom: 80px; }
+    .tech-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; }
+    .tech-card {
+      background: var(--bg); padding: 52px 40px;
+      transition: background 0.7s, transform 0.5s var(--ease);
+    }
+    .tech-card:hover { transform: translateY(-6px); }
+    .tech-num {
+      font-family: var(--serif); font-size: 76px; font-weight: 300;
+      color: var(--accent); line-height: 1; margin-bottom: 14px; opacity: 0.35;
+      transition: color 0.7s;
+    }
+    .tech-title {
+      font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text); margin-bottom: 12px; transition: color 0.7s;
+    }
+    .tech-desc { font-size: 13px; line-height: 1.85; color: var(--muted); transition: color 0.7s; }
+
+    /* ── ORIGIN ── */
+    .section-origin { padding: 180px 52px; text-align: center; position: relative; overflow: hidden; }
+    .origin-bg-glyph {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      font-size: clamp(200px, 30vw, 360px); opacity: 0.04; pointer-events: none;
+      user-select: none; color: var(--text); transition: color 0.7s; line-height: 1;
+    }
+    .origin-inner { position: relative; max-width: 680px; margin: 0 auto; }
+    .origin-tag {
+      font-size: 10px; letter-spacing: 0.38em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 48px; transition: color 0.7s;
+    }
+    .origin-divider {
+      width: 40px; height: 1px; background: var(--accent); margin: 40px auto;
+      transition: background 0.7s;
+    }
+    .origin-desc {
+      font-size: 17px; line-height: 2; color: var(--muted);
+      text-wrap: pretty; transition: color 0.7s;
+    }
+
+    /* ── USE CASES ── */
+    .section-usecases { padding-bottom: 0; }
+    .usecases-header { padding: 80px 52px 60px; text-align: center; }
+    .usecases-grid { display: grid; grid-template-columns: repeat(4,1fr); }
+    .usecase { aspect-ratio: 2/3; position: relative; overflow: hidden; cursor: pointer; }
+    .usecase-bg { width: 100%; height: 100%; transition: transform 0.9s var(--ease); }
+    .usecase:hover .usecase-bg { transform: scale(1.06); }
+    .usecase-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(28,25,23,0.68) 0%, transparent 55%);
+    }
+    .usecase-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 40px 32px 36px; }
+    .usecase-eyebrow { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(240,235,227,0.45); margin-bottom: 8px; }
+    .usecase-title { font-family: var(--serif); font-size: 32px; font-weight: 300; color: #F0EBE3; }
+
+    /* ── COLLECTION ── */
+    .section-collection { padding: 120px 0 100px; }
+    .collection-header {
+      padding: 0 52px; margin-bottom: 56px;
+      display: flex; align-items: flex-end; justify-content: space-between;
+    }
+    .view-all {
+      font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      border-bottom: 1px solid var(--border); padding-bottom: 2px;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .view-all:hover { color: var(--text); border-color: var(--text); }
+    .products-row {
+      padding: 0 52px 20px; display: flex; gap: 24px;
+      overflow-x: auto; scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    }
+    .products-row::-webkit-scrollbar { display: none; }
+    .p-card {
+      flex: 0 0 300px; scroll-snap-align: start;
+      cursor: pointer; text-decoration: none; color: inherit; display: block;
+    }
+    .p-card-img {
+      width: 100%; aspect-ratio: 4/5; border-radius: 6px; overflow: hidden;
+      position: relative; margin-bottom: 20px;
+    }
+    .p-card-bg {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.7s var(--ease);
+    }
+    .p-card:hover .p-card-bg { transform: scale(1.04); }
+    .p-card-shoe {
+      width: 78%;
+      filter: drop-shadow(0 20px 40px rgba(0,0,0,0.13));
+      transition: transform 0.6s var(--ease);
+    }
+    .p-card:hover .p-card-shoe { transform: translateY(-10px) rotate(2deg); }
+    .p-card-badge {
+      position: absolute; top: 16px; left: 16px;
+      padding: 5px 12px; background: rgba(247,243,237,0.9); border-radius: 100px;
+      font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: #1C1917;
+    }
+    .p-card-info { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .p-card-name { font-family: var(--serif); font-size: 22px; font-weight: 400; color: var(--text); margin-bottom: 4px; transition: color 0.7s; }
+    .p-card-sub { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; transition: color 0.7s; }
+    .p-card-price { font-size: 15px; color: var(--muted); white-space: nowrap; transition: color 0.7s; }
+    .p-card-btn {
+      display: block; width: 100%; margin-top: 14px; padding: 13px;
+      background: transparent; border: 1px solid var(--border); border-radius: 100px;
+      font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+      cursor: pointer; font-family: var(--sans); color: var(--text);
+      transition: background 0.3s, color 0.3s, border-color 0.3s, transform 0.3s var(--ease);
+    }
+    .p-card-btn:hover { background: var(--text); color: var(--bg); border-color: var(--text); transform: scale(1.01); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border); padding: 80px 52px 48px;
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px;
+      transition: border-color 0.7s;
+    }
+    .footer-logo {
+      font-family: var(--serif); font-size: 54px; font-weight: 300;
+      color: var(--text); line-height: 1; margin-bottom: 20px; letter-spacing: 0.08em;
+      transition: color 0.7s;
+    }
+    .footer-tagline { font-size: 13px; color: var(--muted); line-height: 1.85; max-width: 220px; transition: color 0.7s; }
+    .footer-col h5 { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 22px; transition: color 0.7s; }
+    .footer-col a { display: block; font-size: 14px; color: var(--text); text-decoration: none; margin-bottom: 13px; opacity: 0.62; transition: opacity 0.2s; }
+    .footer-col a:hover { opacity: 1; }
+    .footer-bottom {
+      grid-column: 1/-1; padding-top: 40px; border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11px; color: var(--muted); transition: color 0.7s, border-color 0.7s;
+    }
+
+    /* ── CART ── */
+    .cart-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.38); z-index: 200;
+      opacity: 0; pointer-events: none; transition: opacity 0.4s;
+    }
+    .cart-overlay.open { opacity: 1; pointer-events: all; }
+    .cart-drawer {
+      position: fixed; top: 0; right: 0; bottom: 0; width: 420px;
+      background: var(--bg); z-index: 201;
+      transform: translateX(105%); transition: transform 0.55s var(--ease), background 0.7s;
+      display: flex; flex-direction: column; border-left: 1px solid var(--border);
+    }
+    .cart-drawer.open { transform: translateX(0); }
+    .cart-head {
+      padding: 32px 32px 24px; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      transition: border-color 0.7s;
+    }
+    .cart-head h2 { font-family: var(--serif); font-size: 26px; font-weight: 400; color: var(--text); transition: color 0.7s; }
+    .cart-close {
+      background: none; border: none; width: 36px; height: 36px; border-radius: 50%;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: var(--muted); font-size: 20px; transition: background 0.2s;
+    }
+    .cart-close:hover { background: var(--accent-light); }
+    .cart-body { flex: 1; overflow-y: auto; padding: 24px 32px; }
+    .cart-empty {
+      text-align: center; padding: 80px 0;
+    }
+    .cart-empty p { font-family: var(--serif); font-size: 22px; color: var(--muted); font-style: italic; transition: color 0.7s; }
+    .cart-empty span { font-size: 12px; color: var(--muted); display: block; margin-top: 8px; letter-spacing: 0.08em; transition: color 0.7s; }
+    .ci-row {
+      display: flex; gap: 16px; padding: 20px 0;
+      border-bottom: 1px solid var(--border); transition: border-color 0.7s;
+    }
+    .ci-thumb {
+      width: 76px; height: 76px; border-radius: 4px; flex-shrink: 0;
+      background: var(--accent-light); display: flex; align-items: center; justify-content: center;
+      transition: background 0.7s;
+    }
+    .ci-thumb svg { width: 64px; }
+    .ci-info { flex: 1; }
+    .ci-name { font-family: var(--serif); font-size: 18px; color: var(--text); margin-bottom: 4px; transition: color 0.7s; }
+    .ci-price { font-size: 13px; color: var(--muted); transition: color 0.7s; }
+    .ci-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; align-self: flex-start; margin-top: 2px; transition: color 0.2s; }
+    .ci-del:hover { color: var(--text); }
+    .cart-foot { padding: 24px 32px 40px; border-top: 1px solid var(--border); transition: border-color 0.7s; }
+    .cart-total-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; }
+    .cart-total-row span { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); transition: color 0.7s; }
+    .cart-total-row strong { font-family: var(--serif); font-size: 30px; font-weight: 400; color: var(--text); transition: color 0.7s; }
+    .checkout-btn {
+      display: block; width: 100%; padding: 18px; background: var(--text); color: var(--bg);
+      border: none; border-radius: 100px; font-size: 11px; letter-spacing: 0.22em;
+      text-transform: uppercase; cursor: pointer; font-family: var(--sans);
+      transition: background 0.7s, color 0.7s, transform 0.3s var(--ease);
+    }
+    .checkout-btn:hover { transform: scale(1.02); }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a class="nav-logo" href="WAI.html">Verhon <span style="font-size:11px;letter-spacing:0.2em;opacity:0.35;vertical-align:middle;font-family:var(--sans);font-weight:300;">Est. 2019</span></a>
+  <div class="nav-links">
+    <a href="#collection">Collection</a>
+    <a href="#story">Story</a>
+    <a href="#philosophy">Philosophy</a>
+  </div>
+  <button class="nav-cart" id="openCart">
+    Bag <span class="cart-badge" id="cartCount">0</span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-top">
+    <p class="hero-eyebrow">SS 2026 — Made in Italy</p>
+    <h1 class="hero-title" id="heroTitle">Feel<br><em>Anywhere</em></h1>
+  </div>
+
+  <div class="hero-center">
+    <div class="hero-shoe-wrap" id="heroShoe">
+      <svg viewBox="0 0 560 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="hug" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#D4C4AE"/><stop offset="100%" stop-color="#B4A48E"/>
+          </linearGradient>
+          <linearGradient id="hsg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#9E8E7E"/><stop offset="100%" stop-color="#8A7A6A"/>
+          </linearGradient>
+        </defs>
+        <ellipse cx="278" cy="224" rx="208" ry="12" fill="rgba(0,0,0,0.08)"/>
+        <path d="M 64 185 Q 62 198 87 204 L 455 200 Q 481 198 489 186 Q 493 175 475 170 L 74 172 Q 62 172 64 185Z" fill="url(#hsg)"/>
+        <path d="M 88 204 L 453 200" stroke="rgba(255,255,255,0.2)" stroke-width="1.2"/>
+        <path d="M 74 172 L 71 147 Q 77 119 122 101 Q 178 81 268 79 Q 348 77 408 97 Q 454 113 467 151 Q 473 165 475 170 Z" fill="url(#hug)"/>
+        <path d="M 412 93 Q 430 67 436 47 Q 440 33 428 29 Q 409 25 394 48 Q 380 67 388 96" fill="url(#hug)"/>
+        <ellipse cx="419" cy="65" rx="16" ry="33" transform="rotate(-10 419 65)" fill="#8A7A6A" opacity="0.55"/>
+        <path d="M 404 49 Q 415 37 428 39" stroke="rgba(255,255,255,0.28)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        <path d="M 71 147 Q 88 127 122 115 Q 155 104 206 100" stroke="rgba(255,255,255,0.42)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+        <path d="M 162 97 Q 285 83 392 98 Q 435 105 458 127" stroke="rgba(0,0,0,0.07)" stroke-width="1.5" fill="none"/>
+        <path d="M 100 131 Q 180 109 310 107 Q 390 106 440 121" stroke="rgba(255,255,255,0.17)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="hero-bottom">
+    <p class="hero-sub">Carry comfort with you.</p>
+    <a href="#collection" class="hero-cta">Explore Collection <span class="arr">→</span></a>
+    <div class="hero-scroll">
+      <div class="scroll-line"></div>
+      Scroll
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-track">
+    <span class="ticker-item">Made in Italy <span class="ticker-dot"></span> Est. 2019 <span class="ticker-dot"></span> Barefoot Philosophy <span class="ticker-dot"></span> Thailand × Florence <span class="ticker-dot"></span> Laser-cut Seamless <span class="ticker-dot"></span> Foldable Design <span class="ticker-dot"></span> 48 Countries <span class="ticker-dot"></span> Carbon Neutral <span class="ticker-dot"></span></span>
+    <span class="ticker-item">Made in Italy <span class="ticker-dot"></span> Est. 2019 <span class="ticker-dot"></span> Barefoot Philosophy <span class="ticker-dot"></span> Thailand × Florence <span class="ticker-dot"></span> Laser-cut Seamless <span class="ticker-dot"></span> Foldable Design <span class="ticker-dot"></span> 48 Countries <span class="ticker-dot"></span> Carbon Neutral <span class="ticker-dot"></span></span>
+  </div>
+</div>
+
+<!-- MANIFESTO -->
+<section class="section-manifesto" id="story">
+  <div class="manifesto-inner">
+    <div>
+      <p class="manifesto-quote reveal">
+        <strong>"The feeling<br>of home"</strong> —<br>carried in<br>every step.
+      </p>
+      <p class="manifesto-sub reveal rd-2">Born from the quiet philosophy of the Thai <em>wai</em> — a gesture of respect, presence, and grace. WAI shoes are not just footwear. They are a feeling you take everywhere.</p>
+    </div>
+    <div class="manifesto-tiles">
+      <div class="m-tile reveal rd-1">
+        <div class="m-tile-bg" style="background: linear-gradient(155deg,#7A5C4A,#4A3828);"></div>
+        <span class="m-tile-label">Travel</span>
+      </div>
+      <div class="m-tile reveal rd-2">
+        <div class="m-tile-bg" style="background: linear-gradient(155deg,#C4A882,#9A7E62);"></div>
+        <span class="m-tile-label">Home</span>
+      </div>
+      <div class="m-tile reveal rd-3">
+        <div class="m-tile-bg" style="background: linear-gradient(155deg,#5A6A72,#3A4A52);"></div>
+        <span class="m-tile-label">Work</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="section-stats">
+  <div class="stat-item reveal">
+    <div class="stat-num">2019</div>
+    <div class="stat-label">Founded in Florence</div>
+  </div>
+  <div class="stat-item reveal rd-1">
+    <div class="stat-num">12<em>k+</em></div>
+    <div class="stat-label">Pairs crafted</div>
+  </div>
+  <div class="stat-item reveal rd-2">
+    <div class="stat-num">48</div>
+    <div class="stat-label">Countries reached</div>
+  </div>
+  <div class="stat-item reveal rd-3">
+    <div class="stat-num">180<em>g</em></div>
+    <div class="stat-label">Per shoe, size 40</div>
+  </div>
+</div>
+
+<!-- PHILOSOPHY -->
+<section class="section-philosophy" id="philosophy">
+  <div class="philosophy-inner">
+    <div class="pill-tag reveal">The Barefoot Principle</div>
+    <h2 class="section-h2 reveal rd-1">Freedom begins<br><em>at the sole.</em></h2>
+    <p class="section-body reveal rd-2">Every WAI shoe is engineered to disappear. Laser-cut, seamless, foldable — designed so you barely notice you're wearing them. Because the best shoe is the one that gets out of the way.</p>
+    <div class="philosophy-feats">
+      <div class="pfeat reveal">
+        <div class="pfeat-num">01</div>
+        <div class="pfeat-title">Laser-cut seamless</div>
+        <p class="pfeat-desc">No stitching. No friction. The upper is cut from a single piece of fabric — smooth against every step.</p>
+      </div>
+      <div class="pfeat reveal rd-1">
+        <div class="pfeat-num">02</div>
+        <div class="pfeat-title">Foldable & flexible</div>
+        <p class="pfeat-desc">Fold them flat. Roll them up. Slip them in your bag. WAI travels as lightly as you do.</p>
+      </div>
+      <div class="pfeat reveal rd-2">
+        <div class="pfeat-num">03</div>
+        <div class="pfeat-title">Weightless comfort</div>
+        <p class="pfeat-desc">Under 180g per shoe. An ultra-thin sole that lets the ground speak to your foot — naturally.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECHNOLOGY -->
+<section class="section-tech">
+  <div class="tech-inner">
+    <div class="tech-header">
+      <div class="pill-tag reveal">Engineered in Italy</div>
+      <h2 class="section-h2 reveal rd-1">Craft meets<br><em>innovation.</em></h2>
+    </div>
+    <div class="tech-grid">
+      <div class="tech-card reveal">
+        <div class="tech-num">01</div>
+        <div class="tech-title">Laser-cut precision</div>
+        <p class="tech-desc">Every edge cut by laser for micron-perfect consistency. Zero waste. Zero seams. Just pure form.</p>
+      </div>
+      <div class="tech-card reveal rd-1">
+        <div class="tech-num">02</div>
+        <div class="tech-title">Memory foam sole</div>
+        <p class="tech-desc">A 4mm sole of adaptive memory foam contours to your foot within minutes of wear.</p>
+      </div>
+      <div class="tech-card reveal rd-2">
+        <div class="tech-num">03</div>
+        <div class="tech-title">Technical fabrics</div>
+        <p class="tech-desc">Recycled Italian microfiber. Breathable, quick-dry, and soft as a second skin.</p>
+      </div>
+      <div class="tech-card reveal rd-3">
+        <div class="tech-num">04</div>
+        <div class="tech-title">Made in Italy</div>
+        <p class="tech-desc">Every pair assembled by artisan hands in our family workshop near Florence.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDER LETTER -->
+<section class="section-founder">
+  <div class="founder-inner">
+    <div class="founder-meta reveal">
+      <div class="founder-year">2019</div>
+      <div class="founder-label">A letter from<br>the founder</div>
+      <div class="founder-sig">Nils S.</div>
+    </div>
+    <div class="founder-body">
+      <p class="reveal">I grew up between two worlds. <em>The structured elegance of European craft and the quiet, grounded simplicity of Southeast Asia.</em> For years I searched for a shoe that carried both — and found nothing.</p>
+      <p class="reveal rd-1">Every shoe I tried felt like a compromise. Too heavy for travel. Too formal for home. Too stiff for the body to move naturally. I wanted something that disappeared — that let me feel the earth, the floor, the moment.</p>
+      <div class="founder-pull reveal rd-2">"I didn't set out to make a shoe. I set out to make a feeling."</div>
+      <p class="reveal rd-2">WAI was born in a small workshop near Florence in 2019. Five prototypes. Eighteen months. One obsession: the perfect balance of absence and presence. A shoe you forget you're wearing, made by hands that never forget why.</p>
+      <p class="reveal rd-3"><em>This is still the first thing I check every morning — that every pair leaving our workshop carries that feeling. That promise hasn't changed.</em></p>
+    </div>
+  </div>
+</section>
+
+<!-- ORIGIN -->
+<section class="section-origin" id="about">
+  <div class="origin-bg-glyph">ไหว้</div>
+  <div class="origin-inner">
+    <p class="origin-tag reveal">Origin — Thailand × Italy</p>
+    <h2 class="section-h2 reveal rd-1">The gesture<br>of <em>wai.</em></h2>
+    <div class="origin-divider reveal rd-2"></div>
+    <p class="origin-desc reveal rd-2">In Thai culture, the <em>wai</em> is a bow with hands pressed together — a gesture of humility, presence, and grace. We named our brand after this philosophy: slow down, feel the ground beneath you, be present in every step.<br><br>WAI shoes are our material translation of that quiet truth. Minimal by design. Meaningful by nature.</p>
+  </div>
+</section>
+
+<!-- USE CASES -->
+<section class="section-usecases">
+  <div class="usecases-header">
+    <div class="pill-tag reveal">One shoe. Every moment.</div>
+  </div>
+  <div class="usecases-grid">
+    <div class="usecase reveal">
+      <div class="usecase-bg" style="background: linear-gradient(160deg,#4A3C58,#2A2030);"></div>
+      <div class="usecase-overlay"></div>
+      <div class="usecase-content">
+        <p class="usecase-eyebrow">01 / Use case</p>
+        <h3 class="usecase-title">Travel</h3>
+      </div>
+    </div>
+    <div class="usecase reveal rd-1">
+      <div class="usecase-bg" style="background: linear-gradient(160deg,#C4B4A0,#8A7A6A);"></div>
+      <div class="usecase-overlay"></div>
+      <div class="usecase-content">
+        <p class="usecase-eyebrow">02 / Use case</p>
+        <h3 class="usecase-title">Home</h3>
+      </div>
+    </div>
+    <div class="usecase reveal rd-2">
+      <div class="usecase-bg" style="background: linear-gradient(160deg,#5A6A5A,#323A32);"></div>
+      <div class="usecase-overlay"></div>
+      <div class="usecase-content">
+        <p class="usecase-eyebrow">03 / Use case</p>
+        <h3 class="usecase-title">Work</h3>
+      </div>
+    </div>
+    <div class="usecase reveal rd-3">
+      <div class="usecase-bg" style="background: linear-gradient(160deg,#6A7A8A,#3A4A58);"></div>
+      <div class="usecase-overlay"></div>
+      <div class="usecase-content">
+        <p class="usecase-eyebrow">04 / Use case</p>
+        <h3 class="usecase-title">Studio</h3>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRESS -->
+<section class="section-press">
+  <div class="press-inner">
+    <span class="press-label">As seen in</span>
+    <div class="press-divider"></div>
+    <div class="press-logos">
+      <span class="press-name">Monocle</span>
+      <span class="press-name">Vogue Italia</span>
+      <span class="press-name">Wallpaper*</span>
+      <span class="press-name">GQ</span>
+      <span class="press-name">Hypebeast</span>
+      <span class="press-name">Domus</span>
+    </div>
+  </div>
+</section>
+
+<!-- COLLECTION -->
+<section class="section-collection" id="collection">
+  <div class="collection-header">
+    <div>
+      <div class="pill-tag reveal">SS 2026</div>
+      <h2 class="section-h2 reveal rd-1">The Collection</h2>
+    </div>
+    <a class="view-all" href="WAI Product.html">View all →</a>
+  </div>
+  <div class="products-row">
+
+    <a class="p-card" href="WAI Product.html">
+      <div class="p-card-img">
+        <div class="p-card-bg" style="background:#E8E2D8;">
+          <svg class="p-card-shoe" viewBox="0 0 560 240" fill="none">
+            <defs><linearGradient id="ps1" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#C8B8A4"/><stop offset="100%" stop-color="#A89078"/></linearGradient></defs>
+            <ellipse cx="278" cy="224" rx="202" ry="11" fill="rgba(0,0,0,0.07)"/>
+            <path d="M 64 185 Q 62 198 87 204 L 455 200 Q 481 198 489 186 Q 493 175 475 170 L 74 172Z" fill="#9E8E7E"/>
+            <path d="M 74 172 L 71 147 Q 77 119 122 101 Q 178 81 268 79 Q 348 77 408 97 Q 454 113 467 151 L 475 170Z" fill="url(#ps1)"/>
+            <path d="M 412 93 Q 430 67 436 47 Q 440 33 428 29 Q 409 25 394 48 Q 380 67 388 96" fill="url(#ps1)"/>
+            <ellipse cx="419" cy="65" rx="16" ry="33" transform="rotate(-10 419 65)" fill="#8A7A6A" opacity="0.5"/>
+            <path d="M 71 147 Q 88 127 122 115 Q 155 104 206 100" stroke="rgba(255,255,255,0.42)" stroke-width="2" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <span class="p-card-badge">Bestseller</span>
+      </div>
+      <div class="p-card-info">
+        <div><div class="p-card-name">WAI Zero</div><div class="p-card-sub">Everyday minimalism</div></div>
+        <div class="p-card-price">€189</div>
+      </div>
+      <button class="p-card-btn" onclick="event.preventDefault();addToCart('WAI Zero',189)">Add to Bag</button>
+    </a>
+
+    <a class="p-card" href="WAI Product.html">
+      <div class="p-card-img">
+        <div class="p-card-bg" style="background:#2C3540;">
+          <svg class="p-card-shoe" viewBox="0 0 560 240" fill="none">
+            <defs><linearGradient id="ps2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7A8A9A"/><stop offset="100%" stop-color="#4A5A6A"/></linearGradient></defs>
+            <ellipse cx="278" cy="224" rx="202" ry="11" fill="rgba(0,0,0,0.14)"/>
+            <path d="M 64 185 Q 62 198 87 204 L 455 200 Q 481 198 489 186 Q 493 175 475 170 L 74 172Z" fill="#2A3030"/>
+            <path d="M 74 172 L 71 147 Q 77 119 122 101 Q 178 81 268 79 Q 348 77 408 97 Q 454 113 467 151 L 475 170Z" fill="url(#ps2)"/>
+            <path d="M 412 93 Q 430 67 436 47 Q 440 33 428 29 Q 409 25 394 48 Q 380 67 388 96" fill="url(#ps2)"/>
+            <ellipse cx="419" cy="65" rx="16" ry="33" transform="rotate(-10 419 65)" fill="#2A3A4A" opacity="0.65"/>
+            <path d="M 71 147 Q 88 127 122 115 Q 155 104 206 100" stroke="rgba(255,255,255,0.22)" stroke-width="2" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <span class="p-card-badge">New</span>
+      </div>
+      <div class="p-card-info">
+        <div><div class="p-card-name">WAI Travel</div><div class="p-card-sub">Foldable. Weightless.</div></div>
+        <div class="p-card-price">€229</div>
+      </div>
+      <button class="p-card-btn" onclick="event.preventDefault();addToCart('WAI Travel',229)">Add to Bag</button>
+    </a>
+
+    <a class="p-card" href="WAI Product.html">
+      <div class="p-card-img">
+        <div class="p-card-bg" style="background:#D8CFC4;">
+          <svg class="p-card-shoe" viewBox="0 0 560 240" fill="none">
+            <defs><linearGradient id="ps3" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#E8D8C4"/><stop offset="100%" stop-color="#C8B8A4"/></linearGradient></defs>
+            <ellipse cx="278" cy="224" rx="202" ry="11" fill="rgba(0,0,0,0.06)"/>
+            <path d="M 64 185 Q 62 198 87 204 L 455 200 Q 481 198 489 186 Q 493 175 475 170 L 74 172Z" fill="#AEA090"/>
+            <path d="M 74 172 L 71 147 Q 77 119 122 101 Q 178 81 268 79 Q 348 77 408 97 Q 454 113 467 151 L 475 170Z" fill="url(#ps3)"/>
+            <path d="M 412 93 Q 430 67 436 47 Q 440 33 428 29 Q 409 25 394 48 Q 380 67 388 96" fill="url(#ps3)"/>
+            <ellipse cx="419" cy="65" rx="16" ry="33" transform="rotate(-10 419 65)" fill="#9E9080" opacity="0.45"/>
+            <path d="M 71 147 Q 88 127 122 115 Q 155 104 206 100" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+      </div>
+      <div class="p-card-info">
+        <div><div class="p-card-name">WAI Home</div><div class="p-card-sub">Indoor wellness</div></div>
+        <div class="p-card-price">€159</div>
+      </div>
+      <button class="p-card-btn" onclick="event.preventDefault();addToCart('WAI Home',159)">Add to Bag</button>
+    </a>
+
+    <a class="p-card" href="WAI Product.html">
+      <div class="p-card-img">
+        <div class="p-card-bg" style="background:#3C3830;">
+          <svg class="p-card-shoe" viewBox="0 0 560 240" fill="none">
+            <defs><linearGradient id="ps4" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#5A5248"/><stop offset="100%" stop-color="#3A3028"/></linearGradient></defs>
+            <ellipse cx="278" cy="224" rx="202" ry="11" fill="rgba(0,0,0,0.15)"/>
+            <path d="M 64 185 Q 62 198 87 204 L 455 200 Q 481 198 489 186 Q 493 175 475 170 L 74 172Z" fill="#2A2820"/>
+            <path d="M 74 172 L 71 147 Q 77 119 122 101 Q 178 81 268 79 Q 348 77 408 97 Q 454 113 467 151 L 475 170Z" fill="url(#ps4)"/>
+            <path d="M 412 93 Q 430 67 436 47 Q 440 33 428 29 Q 409 25 394 48 Q 380 67 388 96" fill="url(#ps4)"/>
+            <ellipse cx="419" cy="65" rx="16" ry="33" transform="rotate(-10 419 65)" fill="#1A1810" opacity="0.7"/>
+            <path d="M 71 147 Q 88 127 122 115 Q 155 104 206 100" stroke="rgba(255,255,255,0.18)" stroke-width="2" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <span class="p-card-badge">Limited</span>
+      </div>
+      <div class="p-card-info">
+        <div><div class="p-card-name">WAI Studio</div><div class="p-card-sub">Move freely, work boldly</div></div>
+        <div class="p-card-price">€199</div>
+      </div>
+      <button class="p-card-btn" onclick="event.preventDefault();addToCart('WAI Studio',199)">Add to Bag</button>
+    </a>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">WAI</div>
+    <p class="footer-tagline">Barefoot-inspired footwear. Made in Italy, rooted in Thai philosophy.</p>
+  </div>
+  <div class="footer-col">
+    <h5>Collection</h5>
+    <a href="#">WAI Zero</a><a href="#">WAI Travel</a><a href="#">WAI Home</a><a href="#">WAI Studio</a>
+  </div>
+  <div class="footer-col">
+    <h5>Story</h5>
+    <a href="#">Our Philosophy</a><a href="#">Made in Italy</a><a href="#">The Wai Gesture</a><a href="#">Sustainability</a>
+  </div>
+  <div class="footer-col">
+    <h5>Support</h5>
+    <a href="#">Sizing Guide</a><a href="#">Shipping & Returns</a><a href="#">Care Guide</a><a href="#">Contact</a>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 WAI Studio Srl — Florence, Italy</span>
+    <span>Instagram · Press · Careers</span>
+  </div>
+</footer>
+
+<!-- CART DRAWER -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head">
+    <h2>Your Bag</h2>
+    <button class="cart-close" id="closeCart">✕</button>
+  </div>
+  <div class="cart-body" id="cartBody">
+    <div class="cart-empty"><p>Your bag is empty.</p><span>Add something beautiful.</span></div>
+  </div>
+  <div class="cart-foot" id="cartFoot" style="display:none;">
+    <div class="cart-total-row"><span>Total</span><strong id="cartTotal">€0</strong></div>
+    <button class="checkout-btn">Proceed to Checkout →</button>
+  </div>
+</div>
+
+<div id="tweaks-root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+
+<script>
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "theme": "warm",
+    "heroText": "feel"
+  }/*EDITMODE-END*/;
+
+  // ── CART ──
+  let cart = JSON.parse(localStorage.getItem('wai-cart') || '[]');
+  function saveCart() { localStorage.setItem('wai-cart', JSON.stringify(cart)); }
+  function addToCart(name, price) {
+    const ex = cart.find(i => i.name === name);
+    if (ex) ex.qty++; else cart.push({ name, price, qty: 1 });
+    saveCart(); renderCart(); openCart();
+  }
+  window.addToCart = addToCart;
+  function removeFromCart(name) { cart = cart.filter(i => i.name !== name); saveCart(); renderCart(); }
+  window.removeFromCart = removeFromCart;
+  function renderCart() {
+    const body = document.getElementById('cartBody');
+    const foot = document.getElementById('cartFoot');
+    const total = cart.reduce((s,i) => s + i.price * i.qty, 0);
+    const count = cart.reduce((s,i) => s + i.qty, 0);
+    document.getElementById('cartCount').textContent = count;
+    if (cart.length === 0) {
+      body.innerHTML = '<div class="cart-empty"><p>Your bag is empty.</p><span>Add something beautiful.</span></div>';
+      foot.style.display = 'none'; return;
+    }
+    foot.style.display = 'block';
+    document.getElementById('cartTotal').textContent = '€' + total;
+    body.innerHTML = cart.map(item => `
+      <div class="ci-row">
+        <div class="ci-thumb">
+          <svg viewBox="0 0 560 240" fill="none"><path d="M 64 185 Q 62 198 87 204 L 455 200 Q 481 198 489 186 Q 493 175 475 170 L 74 172Z" fill="#9E8E7E"/><path d="M 74 172 L 71 147 Q 77 119 122 101 Q 178 81 268 79 Q 348 77 408 97 Q 454 113 467 151 L 475 170Z" fill="#C4B5A0"/></svg>
+        </div>
+        <div class="ci-info">
+          <div class="ci-name">${item.name}</div>
+          <div class="ci-price">€${item.price} × ${item.qty}</div>
+        </div>
+        <button class="ci-del" onclick="removeFromCart('${item.name}')">×</button>
+      </div>
+    `).join('');
+  }
+  function openCart() {
+    document.getElementById('cartOverlay').classList.add('open');
+    document.getElementById('cartDrawer').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeCart() {
+    document.getElementById('cartOverlay').classList.remove('open');
+    document.getElementById('cartDrawer').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('openCart').addEventListener('click', openCart);
+  document.getElementById('closeCart').addEventListener('click', closeCart);
+  document.getElementById('cartOverlay').addEventListener('click', closeCart);
+  renderCart();
+
+  // ── NAV ──
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  // ── REVEAL ──
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // ── PARALLAX ──
+  const shoe = document.getElementById('heroShoe');
+  window.addEventListener('scroll', () => {
+    if (shoe) shoe.style.transform = `translateY(${window.scrollY * 0.16}px)`;
+  }, { passive: true });
+
+  // ── APPLY TWEAKS ──
+  window.applyTweaks = function(tweaks) {
+    const r = document.documentElement;
+    const T = {
+      warm: { '--bg':'#F7F3ED','--bg-2':'#EDE7DE','--bg-dark':'#1C1917','--text':'#1C1917','--muted':'#7A6E65','--accent':'#B8A898','--accent-light':'#EDE7DE','--border':'rgba(28,25,23,0.1)' },
+      dark: { '--bg':'#121010','--bg-2':'#1C1917','--bg-dark':'#0A0908','--text':'#F0EBE3','--muted':'#8A7E75','--accent':'#C9B99A','--accent-light':'#2A2520','--border':'rgba(240,235,227,0.1)' },
+      sage: { '--bg':'#F2F5EE','--bg-2':'#E4EBE0','--bg-dark':'#1A1F18','--text':'#1A1F18','--muted':'#627060','--accent':'#8B9E8B','--accent-light':'#DCE8D8','--border':'rgba(26,31,24,0.1)' },
+    };
+    Object.entries(T[tweaks.theme] || T.warm).forEach(([k,v]) => r.style.setProperty(k,v));
+    const HT = { feel:'Feel<br><em>Anywhere</em>', carry:'Carry<br><em>Comfort</em>', born:'Born<br><em>Minimal</em>' };
+    const el = document.getElementById('heroTitle');
+    if (el) el.innerHTML = HT[tweaks.heroText] || HT.feel;
+  };
+</script>
+
+<script type="text/babel">
+  function WAITweaks() {
+    const defaults = window.TWEAK_DEFAULTS || { theme: 'warm', heroText: 'feel' };
+    const [tweaks, setTweak] = useTweaks(defaults);
+    React.useEffect(() => { if (tweaks && window.applyTweaks) window.applyTweaks(tweaks); }, [tweaks]);
+    if (!tweaks) return null;
+    return (
+      <TweaksPanel title="WAI Themes">
+        <TweakSection title="Visual Theme">
+          <TweakRadio id="theme" value={tweaks.theme} onChange={v => setTweak('theme', v)}
+            options={[
+              { label: 'Warm Beige', value: 'warm' },
+              { label: 'Dark Luxe', value: 'dark' },
+              { label: 'Sage Green', value: 'sage' },
+            ]}
+          />
+        </TweakSection>
+        <TweakSection title="Hero Headline">
+          <TweakRadio id="heroText" value={tweaks.heroText} onChange={v => setTweak('heroText', v)}
+            options={[
+              { label: 'Feel Anywhere', value: 'feel' },
+              { label: 'Carry Comfort', value: 'carry' },
+              { label: 'Born Minimal', value: 'born' },
+            ]}
+          />
+        </TweakSection>
+      </TweaksPanel>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('tweaks-root')).render(<WAITweaks />);
+</script>
+
+</body>
+</html>

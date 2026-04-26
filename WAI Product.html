@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WAI Zero — Feel Anywhere</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #F7F3ED; --bg-2: #EDE7DE; --bg-dark: #1C1917;
+      --text: #1C1917; --muted: #7A6E65; --accent: #B8A898;
+      --accent-light: #EDE7DE; --border: rgba(28,25,23,0.1);
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); font-weight: 300; overflow-x: hidden; }
+
+    /* NAV */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 52px;
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family: var(--serif); font-size: 28px; font-weight: 400; letter-spacing: 0.18em; color: var(--text); text-decoration: none; }
+    .nav-back {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none; transition: color 0.25s;
+    }
+    .nav-back:hover { color: var(--text); }
+    .nav-cart {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 22px; border: 1px solid var(--border); border-radius: 100px;
+      background: none; color: var(--text); font-family: var(--sans);
+      font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+      cursor: pointer; transition: background 0.25s;
+    }
+    .nav-cart:hover { background: var(--accent-light); }
+    .cart-badge { background: var(--text); color: var(--bg); width: 18px; height: 18px; border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center; }
+
+    /* PRODUCT HERO */
+    .product-hero {
+      min-height: 100svh; padding-top: 80px;
+      display: grid; grid-template-columns: 1fr 1fr;
+    }
+    .ph-visual {
+      position: relative; overflow: hidden;
+      background: #EDE7DE;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ph-shoe-stage {
+      width: 85%; animation: float-product 6s ease-in-out infinite;
+      filter: drop-shadow(0 40px 70px rgba(0,0,0,0.12));
+    }
+    @keyframes float-product {
+      0%,100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-18px) rotate(0.5deg); }
+    }
+    .ph-color-strip {
+      position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 10px; align-items: center;
+    }
+    .color-dot {
+      width: 24px; height: 24px; border-radius: 50%; cursor: pointer;
+      border: 2px solid transparent; transition: border-color 0.3s, transform 0.3s;
+    }
+    .color-dot.active { border-color: var(--text); transform: scale(1.15); }
+    .ph-info {
+      padding: 120px 72px 80px 64px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .ph-eyebrow {
+      font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 24px;
+    }
+    .ph-title {
+      font-family: var(--serif); font-size: clamp(56px, 5.5vw, 88px);
+      font-weight: 300; line-height: 0.95; margin-bottom: 12px;
+    }
+    .ph-subtitle { font-size: 15px; color: var(--muted); margin-bottom: 40px; letter-spacing: 0.05em; }
+    .ph-price {
+      font-family: var(--serif); font-size: 36px; font-weight: 300;
+      margin-bottom: 40px; color: var(--text);
+    }
+
+    /* SIZE SELECTOR */
+    .size-label { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+    .sizes { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 36px; }
+    .size-btn {
+      width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--border);
+      background: none; font-size: 12px; color: var(--text); cursor: pointer;
+      transition: background 0.25s, color 0.25s, border-color 0.25s;
+      font-family: var(--sans);
+    }
+    .size-btn:hover { background: var(--accent-light); }
+    .size-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+    /* ADD TO BAG */
+    .add-btn {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      width: 100%; padding: 20px; background: var(--text); color: var(--bg);
+      border: none; border-radius: 100px; font-size: 12px; letter-spacing: 0.2em;
+      text-transform: uppercase; cursor: pointer; font-family: var(--sans);
+      transition: transform 0.4s var(--ease), background 0.3s;
+      margin-bottom: 16px;
+    }
+    .add-btn:hover { transform: scale(1.02); background: #2C2825; }
+    .wishlist-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 16px; background: none;
+      border: 1px solid var(--border); border-radius: 100px;
+      font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+      cursor: pointer; font-family: var(--sans); color: var(--muted);
+      transition: background 0.25s, color 0.25s;
+    }
+    .wishlist-btn:hover { background: var(--accent-light); color: var(--text); }
+
+    /* TRUST STRIP */
+    .trust-strip {
+      display: flex; gap: 28px; margin-top: 36px; padding-top: 32px;
+      border-top: 1px solid var(--border);
+    }
+    .trust-item { display: flex; flex-direction: column; gap: 4px; }
+    .trust-item span:first-child { font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text); }
+    .trust-item span:last-child { font-size: 12px; color: var(--muted); }
+
+    /* DETAILS ACCORDION */
+    .section-details { padding: 100px 52px; }
+    .details-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .details-visual {
+      position: sticky; top: 100px;
+      background: var(--bg-2); border-radius: 8px;
+      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .details-visual svg { width: 75%; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.1)); }
+    .accordion-item { border-bottom: 1px solid var(--border); }
+    .accordion-trigger {
+      width: 100%; display: flex; justify-content: space-between; align-items: center;
+      padding: 24px 0; background: none; border: none; cursor: pointer;
+      font-family: var(--sans); text-align: left;
+    }
+    .accordion-trigger span:first-child { font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); }
+    .accordion-icon { font-size: 20px; color: var(--muted); transition: transform 0.4s var(--ease); }
+    .accordion-item.open .accordion-icon { transform: rotate(45deg); }
+    .accordion-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height 0.5s var(--ease), padding 0.4s;
+    }
+    .accordion-item.open .accordion-body { max-height: 400px; }
+    .accordion-content { padding: 0 0 28px; font-size: 14px; line-height: 1.9; color: var(--muted); }
+    .accordion-content ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .accordion-content li::before { content: '—  '; color: var(--accent); }
+
+    /* MATERIALS SECTION */
+    .section-materials { background: var(--bg-dark); padding: 120px 52px; }
+    .materials-inner { max-width: 1200px; margin: 0 auto; }
+    .materials-header { margin-bottom: 70px; }
+    .materials-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2px; }
+    .mat-card { background: #252220; padding: 48px 40px; }
+    .mat-icon { width: 48px; height: 3px; background: var(--accent); margin-bottom: 28px; border-radius: 2px; }
+    .mat-name { font-family: var(--serif); font-size: 26px; font-weight: 300; color: #F0EBE3; margin-bottom: 10px; }
+    .mat-origin { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+    .mat-desc { font-size: 13px; line-height: 1.9; color: rgba(240,235,227,0.48); }
+
+    /* WEAR IT SECTION */
+    .section-wear { padding: 120px 52px; }
+    .wear-inner { max-width: 1200px; margin: 0 auto; }
+    .wear-header { text-align: center; margin-bottom: 70px; }
+    .wear-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; }
+    .wear-tile { aspect-ratio: 3/4; position: relative; overflow: hidden; border-radius: 4px; cursor: pointer; }
+    .wear-tile-bg { width: 100%; height: 100%; transition: transform 0.8s var(--ease); }
+    .wear-tile:hover .wear-tile-bg { transform: scale(1.05); }
+    .wear-label {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 32px 24px 24px;
+      background: linear-gradient(to top, rgba(28,25,23,0.65), transparent);
+      color: #F0EBE3;
+    }
+    .wear-label h3 { font-family: var(--serif); font-size: 24px; font-weight: 300; margin-bottom: 3px; }
+    .wear-label p { font-size: 11px; opacity: 0.55; letter-spacing: 0.08em; }
+
+    /* RELATED */
+    .section-related { padding: 80px 0 100px; background: var(--bg-2); }
+    .related-header { padding: 0 52px; margin-bottom: 48px; }
+    .related-row { padding: 0 52px; display: flex; gap: 24px; overflow-x: auto; scrollbar-width: none; }
+    .related-row::-webkit-scrollbar { display: none; }
+    .r-card { flex: 0 0 280px; text-decoration: none; color: inherit; }
+    .r-card-img { width: 100%; aspect-ratio: 4/5; border-radius: 6px; overflow: hidden; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; transition: transform 0.6s var(--ease); }
+    .r-card:hover .r-card-img { transform: translateY(-6px); }
+    .r-card-name { font-family: var(--serif); font-size: 20px; color: var(--text); margin-bottom: 4px; }
+    .r-card-price { font-size: 13px; color: var(--muted); }
+
+    /* STICKY BAR */
+    .sticky-bar {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+      background: color-mix(in srgb, var(--bg) 92%, transparent);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+      padding: 16px 52px;
+      display: flex; align-items: center; justify-content: space-between;
+      transform: translateY(100%); transition: transform 0.5s var(--ease);
+    }
+    .sticky-bar.visible { transform: translateY(0); }
+    .sticky-info { display: flex; flex-direction: column; gap: 2px; }
+    .sticky-name { font-family: var(--serif); font-size: 22px; font-weight: 400; color: var(--text); }
+    .sticky-price { font-size: 13px; color: var(--muted); }
+    .sticky-add {
+      padding: 14px 48px; background: var(--text); color: var(--bg);
+      border: none; border-radius: 100px; font-size: 11px; letter-spacing: 0.2em;
+      text-transform: uppercase; cursor: pointer; font-family: var(--sans);
+      transition: transform 0.3s var(--ease);
+    }
+    .sticky-add:hover { transform: scale(1.04); }
+
+    /* CART DRAWER */
+    .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.38); z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.4s; }
+    .cart-overlay.open { opacity: 1; pointer-events: all; }
+    .cart-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 420px; background: var(--bg); z-index: 201; transform: translateX(105%); transition: transform 0.55s var(--ease); display: flex; flex-direction: column; border-left: 1px solid var(--border); }
+    .cart-drawer.open { transform: translateX(0); }
+    .cart-head { padding: 32px 32px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .cart-head h2 { font-family: var(--serif); font-size: 26px; font-weight: 400; color: var(--text); }
+    .cart-close { background: none; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 20px; transition: background 0.2s; }
+    .cart-close:hover { background: var(--accent-light); }
+    .cart-body { flex: 1; overflow-y: auto; padding: 24px 32px; }
+    .cart-empty { text-align: center; padding: 80px 0; }
+    .cart-empty p { font-family: var(--serif); font-size: 22px; color: var(--muted); font-style: italic; }
+    .cart-empty span { font-size: 12px; color: var(--muted); display: block; margin-top: 8px; }
+    .ci-row { display: flex; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+    .ci-thumb { width: 76px; height: 76px; border-radius: 4px; background: var(--accent-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .ci-thumb svg { width: 64px; }
+    .ci-info { flex: 1; }
+    .ci-name { font-family: var(--serif); font-size: 18px; color: var(--text); margin-bottom: 4px; }
+    .ci-price { font-size: 13px; color: var(--muted); }
+    .ci-del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 18px; align-self: flex-start; margin-top: 2px; transition: color 0.2s; }
+    .ci-del:hover { color: var(--text); }
+    .cart-foot { padding: 24px 32px 40px; border-top: 1px solid var(--border); }
+    .cart-total-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; }
+    .cart-total-row span { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    .cart-total-row strong { font-family: var(--serif); font-size: 30px; font-weight: 400; color: var(--text); }
+    .checkout-btn { display: block; width: 100%; padding: 18px; background: var(--text); color: var(--bg); border: none; border-radius: 100px; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; cursor: pointer; font-family: var(--sans); transition: transform 0.3s var(--ease); }
+    .checkout-btn:hover { transform: scale(1.02); }
+
+    /* REVEAL */
+    .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.9s var(--ease), transform 0.9s var(--ease); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .rd-1 { transition-delay: 0.12s; } .rd-2 { transition-delay: 0.24s; } .rd-3 { transition-delay: 0.36s; }
+
+    .pill-tag { display: inline-block; padding: 7px 22px; border: 1px solid var(--border); border-radius: 100px; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); margin-bottom: 32px; }
+    .section-h2 { font-family: var(--serif); font-size: clamp(40px, 5vw, 72px); font-weight: 300; line-height: 1.05; color: var(--text); margin-bottom: 24px; }
+    .section-h2 em { font-style: italic; }
+    .section-body { font-size: 16px; line-height: 1.9; color: var(--muted); max-width: 520px; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-back" href="WAI.html">← Back</a>
+  <a class="nav-logo" href="WAI.html">WAI</a>
+  <button class="nav-cart" id="openCart">
+    Bag <span class="cart-badge" id="cartCount">0</span>
+  </button>
+</nav>
+
+<!-- PRODUCT HERO -->
+<section class="product-hero">
+  <div class="ph-visual">
+    <svg class="ph-shoe-stage" viewBox="0 0 560 240" fill="none" id="productShoe">
+      <defs>
+        <linearGradient id="pug" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#D4C4AE"/><stop offset="100%" stop-color="#B4A48E"/>
+        </linearGradient>
+      </defs>
+      <ellipse cx="278" cy="224" rx="208" ry="12" fill="rgba(0,0,0,0.08)"/>
+      <path d="M 64 185 Q 62 198 87 204 L 455 200 Q 481 198 489 186 Q 493 175 475 170 L 74 172 Q 62 172 64 185Z" fill="#9E8E7E"/>
+      <path d="M 88 204 L 453 200" stroke="rgba(255,255,255,0.2)" stroke-width="1.2"/>
+      <path d="M 74 172 L 71 147 Q 77 119 122 101 Q 178 81 268 79 Q 348 77 408 97 Q 454 113 467 151 Q 473 165 475 170 Z" fill="url(#pug)"/>
+      <path d="M 412 93 Q 430 67 436 47 Q 440 33 428 29 Q 409 25 394 48 Q 380 67 388 96" fill="url(#pug)"/>
+      <ellipse cx="419" cy="65" rx="16" ry="33" transform="rotate(-10 419 65)" fill="#8A7A6A" opacity="0.55"/>
+      <path d="M 404 49 Q 415 37 428 39" stroke="rgba(255,255,255,0.28)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+      <path d="M 71 147 Q 88 127 122 115 Q 155 104 206 100" stroke="rgba(255,255,255,0.42)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+      <path d="M 162 97 Q 285 83 392 98 Q 435 105 458 127" stroke="rgba(0,0,0,0.07)" stroke-width="1.5" fill="none"/>
+    </svg>
+    <div class="ph-color-strip">
+      <div class="color-dot active" style="background:#C4B5A0;" data-color="warm" title="Sand"></div>
+      <div class="color-dot" style="background:#5A6878;" data-color="slate" title="Slate"></div>
+      <div class="color-dot" style="background:#3C3830;" data-color="onyx" title="Onyx"></div>
+      <div class="color-dot" style="background:#8B9E8B;" data-color="sage" title="Sage"></div>
+    </div>
+  </div>
+
+  <div class="ph-info">
+    <p class="ph-eyebrow">WAI Collection — SS 2026</p>
+    <h1 class="ph-title">WAI<br>Zero</h1>
+    <p class="ph-subtitle">Everyday minimalism. Made in Italy.</p>
+    <div class="ph-price">€189</div>
+
+    <div class="size-label">Select size (EU)</div>
+    <div class="sizes">
+      <button class="size-btn">36</button>
+      <button class="size-btn">37</button>
+      <button class="size-btn active">38</button>
+      <button class="size-btn">39</button>
+      <button class="size-btn">40</button>
+      <button class="size-btn">41</button>
+      <button class="size-btn">42</button>
+      <button class="size-btn">43</button>
+    </div>
+
+    <button class="add-btn" id="addToBag">
+      Add to Bag <span>→</span>
+    </button>
+    <button class="wishlist-btn">♡ &nbsp; Save to Wishlist</button>
+
+    <div class="trust-strip">
+      <div class="trust-item">
+        <span>Free shipping</span>
+        <span>Orders over €80</span>
+      </div>
+      <div class="trust-item">
+        <span>Free returns</span>
+        <span>30-day policy</span>
+      </div>
+      <div class="trust-item">
+        <span>Made in Italy</span>
+        <span>Florence workshop</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DETAILS ACCORDION -->
+<section class="section-details">
+  <div class="details-inner">
+    <div class="details-visual">
+      <svg viewBox="0 0 560 240" fill="none">
+        <defs>
+          <linearGradient id="dvg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#C8B8A4"/><stop offset="100%" stop-color="#A89078"/>
+          </linearGradient>
+        </defs>
+        <ellipse cx="278" cy="224" rx="200" ry="11" fill="rgba(0,0,0,0.06)"/>
+        <path d="M 64 185 Q 62 198 87 204 L 455 200 Q 481 198 489 186 Q 493 175 475 170 L 74 172Z" fill="#9E8E7E"/>
+        <path d="M 74 172 L 71 147 Q 77 119 122 101 Q 178 81 268 79 Q 348 77 408 97 Q 454 113 467 151 L 475 170Z" fill="url(#dvg)"/>
+        <path d="M 412 93 Q 430 67 436 47 Q 440 33 428 29 Q 409 25 394 48 Q 380 67 388 96" fill="url(#dvg)"/>
+        <ellipse cx="419" cy="65" rx="16" ry="33" transform="rotate(-10 419 65)" fill="#8A7A6A" opacity="0.5"/>
+        <path d="M 71 147 Q 88 127 122 115 Q 155 104 206 100" stroke="rgba(255,255,255,0.42)" stroke-width="2" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <div>
+      <div class="accordion-item open">
+        <button class="accordion-trigger" onclick="toggleAccordion(this)">
+          <span>Description</span>
+          <span class="accordion-icon">+</span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-content">
+            <p>The WAI Zero is our foundational model — a laser-cut, seamless shoe engineered to disappear. Inspired by the barefoot philosophy, it gives your foot total freedom while providing just enough structure for all-day comfort. Wear it everywhere. Notice it nowhere.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" onclick="toggleAccordion(this)">
+          <span>Materials</span>
+          <span class="accordion-icon">+</span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-content">
+            <ul>
+              <li>Upper: recycled Italian microfiber, laser-cut</li>
+              <li>Sole: 4mm adaptive memory foam + natural rubber base</li>
+              <li>Lining: breathable moisture-wicking mesh</li>
+              <li>Weight: 165g per shoe (size 40)</li>
+              <li>Foldable: yes — rolls to ⌀ 8cm</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" onclick="toggleAccordion(this)">
+          <span>Sizing & Fit</span>
+          <span class="accordion-icon">+</span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-content">
+            <p>WAI Zero runs true to size. The wide toe box accommodates natural foot splay. For a more fitted feel, size down half a size. If between sizes, size up.</p><br>
+            <p>Available in EU 36–43. Half sizes not available.</p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <button class="accordion-trigger" onclick="toggleAccordion(this)">
+          <span>Care & Sustainability</span>
+          <span class="accordion-icon">+</span>
+        </button>
+        <div class="accordion-body">
+          <div class="accordion-content">
+            <ul>
+              <li>Machine washable at 30°C</li>
+              <li>Air dry only — do not tumble dry</li>
+              <li>92% recycled material content</li>
+              <li>Carbon-neutral production since 2024</li>
+              <li>Packaging: 100% recycled, unbleached</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MATERIALS -->
+<section class="section-materials">
+  <div class="materials-inner">
+    <div class="materials-header">
+      <div class="pill-tag reveal" style="border-color:rgba(240,235,227,0.15);color:#8A7E75;">Craftsmanship</div>
+      <h2 class="section-h2 reveal rd-1" style="color:#F0EBE3;">What it's<br><em>made of.</em></h2>
+    </div>
+    <div class="materials-grid">
+      <div class="mat-card reveal">
+        <div class="mat-icon"></div>
+        <div class="mat-name">Italian Microfiber</div>
+        <div class="mat-origin">Prato, Tuscany</div>
+        <p class="mat-desc">Woven in the textile capital of Italy. Ultra-soft, breathable, and strong — this recycled microfiber is the backbone of every WAI upper.</p>
+      </div>
+      <div class="mat-card reveal rd-1">
+        <div class="mat-icon"></div>
+        <div class="mat-name">Memory Foam</div>
+        <div class="mat-origin">Developed in Milan</div>
+        <p class="mat-desc">Our proprietary 4mm memory foam sole adapts to your exact foot shape within minutes of wear. Thin enough to feel the ground. Soft enough to forget it's there.</p>
+      </div>
+      <div class="mat-card reveal rd-2">
+        <div class="mat-icon"></div>
+        <div class="mat-name">Natural Rubber</div>
+        <div class="mat-origin">FSC-certified source</div>
+        <p class="mat-desc">The ultra-thin rubber outsole provides grip on any surface without adding weight or rigidity. Harvested from FSC-certified plantations.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WEAR IT -->
+<section class="section-wear">
+  <div class="wear-inner">
+    <div class="wear-header">
+      <div class="pill-tag reveal">Versatility</div>
+      <h2 class="section-h2 reveal rd-1">One shoe.<br><em>Every moment.</em></h2>
+    </div>
+    <div class="wear-grid">
+      <div class="wear-tile reveal">
+        <div class="wear-tile-bg" style="background: linear-gradient(160deg,#4A3C58,#2A2030);"></div>
+        <div class="wear-label"><h3>Travel</h3><p>Gate to gate comfort</p></div>
+      </div>
+      <div class="wear-tile reveal rd-1">
+        <div class="wear-tile-bg" style="background: linear-gradient(160deg,#C4B4A0,#8A7A6A);"></div>
+        <div class="wear-label"><h3>Home</h3><p>Your sanctuary shoe</p></div>
+      </div>
+      <div class="wear-tile reveal rd-2">
+        <div class="wear-tile-bg" style="background: linear-gradient(160deg,#5A6A5A,#323A32);"></div>
+        <div class="wear-label"><h3>Work</h3><p>Focus, uninterrupted</p></div>
+      </div>
+      <div class="wear-tile reveal rd-3">
+        <div class="wear-tile-bg" style="background: linear-gradient(160deg,#6A7A8A,#3A4A58);"></div>
+        <div class="wear-label"><h3>Studio</h3><p>Move freely, create boldly</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RELATED -->
+<section class="section-related">
+  <div class="related-header">
+    <h2 class="section-h2 reveal">You may also like</h2>
+  </div>
+  <div class="related-row">
+    <a class="r-card" href="#">
+      <div class="r-card-img" style="background:#2C3540;">
+        <svg style="width:75%;filter:drop-shadow(0 12px 24px rgba(0,0,0,0.12))" viewBox="0 0 560 240" fill="none">
+          <path d="M 64 185 Q 62 198 87 204 L 455 200 Q 481 198 489 186 Q 493 175 475 170 L 74 172Z" fill="#2A3030"/>
+          <path d="M 74 172 L 71 147 Q 77 119 122 101 Q 178 81 268 79 Q 348 77 408 97 Q 454 113 467 151 L 475 170Z" fill="#5A6878"/>
+          <path d="M 412 93 Q 430 67 436 47 Q 440 33 428 29 Q 409 25 394 48 Q 380 67 388 96" fill="#5A6878"/>
+        </svg>
+      </div>
+      <div class="r-card-name">WAI Travel</div>
+      <div class="r-card-price">€229</div>
+    </a>
+    <a class="r-card" href="#">
+      <div class="r-card-img" style="background:#D8CFC4;">
+        <svg style="width:75%;filter:drop-shadow(0 12px 24px rgba(0,0,0,0.08))" viewBox="0 0 560 240" fill="none">
+          <path d="M 64 185 Q 62 198 87 204 L 455 200 Q 481 198 489 186 Q 493 175 475 170 L 74 172Z" fill="#AEA090"/>
+          <path d="M 74 172 L 71 147 Q 77 119 122 101 Q 178 81 268 79 Q 348 77 408 97 Q 454 113 467 151 L 475 170Z" fill="#E0D0BC"/>
+          <path d="M 412 93 Q 430 67 436 47 Q 440 33 428 29 Q 409 25 394 48 Q 380 67 388 96" fill="#E0D0BC"/>
+        </svg>
+      </div>
+      <div class="r-card-name">WAI Home</div>
+      <div class="r-card-price">€159</div>
+    </a>
+    <a class="r-card" href="#">
+      <div class="r-card-img" style="background:#3C3830;">
+        <svg style="width:75%;filter:drop-shadow(0 12px 24px rgba(0,0,0,0.15))" viewBox="0 0 560 240" fill="none">
+          <path d="M 64 185 Q 62 198 87 204 L 455 200 Q 481 198 489 186 Q 493 175 475 170 L 74 172Z" fill="#2A2820"/>
+          <path d="M 74 172 L 71 147 Q 77 119 122 101 Q 178 81 268 79 Q 348 77 408 97 Q 454 113 467 151 L 475 170Z" fill="#5A5248"/>
+          <path d="M 412 93 Q 430 67 436 47 Q 440 33 428 29 Q 409 25 394 48 Q 380 67 388 96" fill="#5A5248"/>
+        </svg>
+      </div>
+      <div class="r-card-name">WAI Studio</div>
+      <div class="r-card-price">€199</div>
+    </a>
+  </div>
+</section>
+
+<!-- STICKY BAR -->
+<div class="sticky-bar" id="stickyBar">
+  <div class="sticky-info">
+    <div class="sticky-name">WAI Zero</div>
+    <div class="sticky-price">€189 — Sand</div>
+  </div>
+  <button class="sticky-add" id="stickyAdd">Add to Bag →</button>
+</div>
+
+<!-- CART DRAWER -->
+<div class="cart-overlay" id="cartOverlay"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="cart-head"><h2>Your Bag</h2><button class="cart-close" id="closeCart">✕</button></div>
+  <div class="cart-body" id="cartBody">
+    <div class="cart-empty"><p>Your bag is empty.</p><span>Add something beautiful.</span></div>
+  </div>
+  <div class="cart-foot" id="cartFoot" style="display:none;">
+    <div class="cart-total-row"><span>Total</span><strong id="cartTotal">€0</strong></div>
+    <button class="checkout-btn">Proceed to Checkout →</button>
+  </div>
+</div>
+
+<script>
+  // ── CART ──
+  let cart = JSON.parse(localStorage.getItem('wai-cart') || '[]');
+  function saveCart() { localStorage.setItem('wai-cart', JSON.stringify(cart)); }
+  function addToCart(name, price) {
+    const ex = cart.find(i => i.name === name);
+    if (ex) ex.qty++; else cart.push({ name, price, qty: 1 });
+    saveCart(); renderCart(); openCart();
+  }
+  function removeFromCart(name) { cart = cart.filter(i => i.name !== name); saveCart(); renderCart(); }
+  window.removeFromCart = removeFromCart;
+  function renderCart() {
+    const body = document.getElementById('cartBody');
+    const foot = document.getElementById('cartFoot');
+    const total = cart.reduce((s,i) => s + i.price * i.qty, 0);
+    const count = cart.reduce((s,i) => s + i.qty, 0);
+    document.getElementById('cartCount').textContent = count;
+    if (cart.length === 0) {
+      body.innerHTML = '<div class="cart-empty"><p>Your bag is empty.</p><span>Add something beautiful.</span></div>';
+      foot.style.display = 'none'; return;
+    }
+    foot.style.display = 'block';
+    document.getElementById('cartTotal').textContent = '€' + total;
+    body.innerHTML = cart.map(item => `
+      <div class="ci-row">
+        <div class="ci-thumb"><svg viewBox="0 0 560 240" fill="none"><path d="M 64 185 Q 62 198 87 204 L 455 200 Q 481 198 489 186 Q 493 175 475 170 L 74 172Z" fill="#9E8E7E"/><path d="M 74 172 L 71 147 Q 77 119 122 101 Q 178 81 268 79 Q 348 77 408 97 Q 454 113 467 151 L 475 170Z" fill="#C4B5A0"/></svg></div>
+        <div class="ci-info"><div class="ci-name">${item.name}</div><div class="ci-price">€${item.price} × ${item.qty}</div></div>
+        <button class="ci-del" onclick="removeFromCart('${item.name}')">×</button>
+      </div>
+    `).join('');
+  }
+  function openCart() {
+    document.getElementById('cartOverlay').classList.add('open');
+    document.getElementById('cartDrawer').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeCart() {
+    document.getElementById('cartOverlay').classList.remove('open');
+    document.getElementById('cartDrawer').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('openCart').addEventListener('click', openCart);
+  document.getElementById('closeCart').addEventListener('click', closeCart);
+  document.getElementById('cartOverlay').addEventListener('click', closeCart);
+  document.getElementById('addToBag').addEventListener('click', () => addToCart('WAI Zero', 189));
+  document.getElementById('stickyAdd').addEventListener('click', () => addToCart('WAI Zero', 189));
+  renderCart();
+
+  // ── SIZE SELECT ──
+  document.querySelectorAll('.size-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // ── COLOR DOTS ──
+  const colors = {
+    warm: { stop1:'#D4C4AE', stop2:'#B4A48E', sole:'#9E8E7E', bg:'#EDE7DE' },
+    slate: { stop1:'#8A9AAA', stop2:'#5A6878', sole:'#4A5060', bg:'#C8D0D8' },
+    onyx: { stop1:'#5A5248', stop2:'#3A3028', sole:'#2A2820', bg:'#3C3830' },
+    sage: { stop1:'#9AAA9A', stop2:'#6A8070', sole:'#506050', bg:'#C8D8C8' },
+  };
+  document.querySelectorAll('.color-dot').forEach(dot => {
+    dot.addEventListener('click', () => {
+      document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+      dot.classList.add('active');
+      const c = colors[dot.dataset.color];
+      if (!c) return;
+      document.querySelector('#pug stop:first-child').setAttribute('stop-color', c.stop1);
+      document.querySelector('#pug stop:last-child').setAttribute('stop-color', c.stop2);
+      document.querySelector('#productShoe path:nth-child(3)').setAttribute('fill', c.sole);
+      document.querySelector('.ph-visual').style.background = c.bg;
+    });
+  });
+
+  // ── ACCORDION ──
+  function toggleAccordion(trigger) {
+    const item = trigger.closest('.accordion-item');
+    item.classList.toggle('open');
+  }
+  window.toggleAccordion = toggleAccordion;
+
+  // ── STICKY BAR ──
+  const heroEnd = document.querySelector('.product-hero');
+  const stickyBar = document.getElementById('stickyBar');
+  const stickyObs = new IntersectionObserver(entries => {
+    stickyBar.classList.toggle('visible', !entries[0].isIntersecting);
+  }, { threshold: 0.1 });
+  stickyObs.observe(heroEnd);
+
+  // ── REVEAL ──
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
